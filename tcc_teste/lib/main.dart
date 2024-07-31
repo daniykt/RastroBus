@@ -4,6 +4,7 @@ void main() {
   runApp(MyApp());
 }
 
+// Aplicativo principal
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -13,20 +14,24 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// Página principal com navegação inferior
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // Índice da aba selecionada
   int _selectedIndex = 0;
 
+  // Lista de widgets para cada aba
   static const List<Widget> _widgetOptions = <Widget>[
     Text('Previsões'),
     Text('Linhas'),
     Rotas(),
   ];
 
+  // Função chamada quando um item da barra de navegação inferior é selecionado
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -37,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('RastroBus'),
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
@@ -57,17 +63,16 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color.fromARGB(255, 0, 119, 255),
+        selectedItemColor: Colors.blue, // Cor dos ícones selecionados
         onTap: _onItemTapped,
       ),
     );
   }
 }
 
+// Widget para a aba 'Rotas'
 class Rotas extends StatelessWidget {
-  const Rotas({
-    super.key,
-  });
+  const Rotas({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,14 +80,16 @@ class Rotas extends StatelessWidget {
   }
 }
 
+// Widget para a tela de 'Rotas'
 class RotasWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          // Parte do topo
-          Padding(
+          // Parte do topo com campos de entrada e botão
+          Container(
+            color: Color.fromARGB(129, 28, 199, 128), // Cor de fundo da parte superior
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
@@ -107,6 +114,7 @@ class RotasWidget extends StatelessWidget {
               ],
             ),
           ),
+          // Parte inferior com botões
           Expanded(
             child: Center(
               child: SingleChildScrollView(
@@ -117,32 +125,32 @@ class RotasWidget extends StatelessWidget {
                       'PONTO MAIS PRÓXIMO',
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 15),
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
-                        minimumSize: Size(double.infinity, 50),
+                        minimumSize: Size(double.infinity, 80),
                       ),
-                      child: Text('Azul', style: TextStyle(fontSize: 18)),
+                      child: Text('Azul', style: TextStyle(fontSize: 18, color: Colors.white)),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
-                        minimumSize: Size(double.infinity, 50),
+                        minimumSize: Size(double.infinity, 80),
                       ),
-                      child: Text('Vermelha', style: TextStyle(fontSize: 18)),
+                      child: Text('Vermelho', style: TextStyle(fontSize: 18, color: Colors.white)),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
-                        minimumSize: Size(double.infinity, 50),
+                        minimumSize: Size(double.infinity, 80),
                       ),
-                      child: Text('Verde', style: TextStyle(fontSize: 18)),
+                      child: Text('Verde', style: TextStyle(fontSize: 18, color: Colors.white)),
                     ),
                   ],
                 ),
