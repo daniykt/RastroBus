@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rastrobus/pages/Home_page.dart';
+import 'package:rastrobus/pages/Rota_page.dart';
 import 'package:rastrobus/pages/rotaprevistas_page.dart';
 
 class Aplicacao extends StatelessWidget {
@@ -9,8 +11,10 @@ class Aplicacao extends StatelessWidget {
     return MaterialApp(
       title: "RastroBus",
       debugShowCheckedModeBanner: false,
-      initialRoute: "/rotasprevistas",
+      initialRoute: "/homepage",
       routes: {
+        "/homepage": (_) => const HomePage(),
+        "/rotapage": (_) => const RotaPage(),
         "/rotasprevistas": (_) => const RotasPrevistasPage(),
       },
     );
