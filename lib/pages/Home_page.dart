@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rastrobus/pages/Linhas_page.dart';
 import 'Rota_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("RastroBus"),
+        title: const Text("RastroBus"),
       ),
        body: IndexedStack( //Define a parte principal da tela usando o IndexedStack, 
        //que permite mostrar apenas um widget de uma lista, 
@@ -23,10 +24,10 @@ class _HomePageState extends State<HomePage> {
         index: itemSelecionado, //Aqui indica qual layout vai ser escolhido com base aonde a pessoa clica
         children: const [
           Center(child: Text("Previsões")),
-          Center(child: Text("Linhas")),
+          LinhasPage(),
           RotaPage(), 
         ],
-      ),                         
+      ), 
                      //CurrentIndex: // Define o item selecionado atualmente.
        bottomNavigationBar: BottomNavigationBar(currentIndex: itemSelecionado, selectedItemColor: Colors.blue ,items: const [
         BottomNavigationBarItem(icon: Icon(Icons.access_time), label: "Previsões"),

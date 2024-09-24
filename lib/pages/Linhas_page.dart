@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
 
-
-class RotaPage extends StatefulWidget {
-  const RotaPage({super.key});
+class LinhasPage extends StatefulWidget {
+  const LinhasPage({super.key});
 
   @override
-  State<RotaPage> createState() => _RotaPageState(); 
+  State<LinhasPage> createState() => _LinhasPageState();
 }
 
-
-class _RotaPageState extends State<RotaPage> {
+class _LinhasPageState extends State<LinhasPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,9 +27,7 @@ class _RotaPageState extends State<RotaPage> {
       padding: const EdgeInsets.all(8.0), 
       child: Column(
         children: <Widget>[
-          _buildTextField('Sua Posição'), // Chama o método que cria um campo de texto
-          const SizedBox(height: 8), // Adiciona um espaçamento
-          _buildTextField('Destino Final'), // Chama o método que cria outro campo de texto
+          _buildTextField('Pesquise uma Linha'), // Chama o método que cria um campo de texto
           const SizedBox(height: 8), // Adiciona um espaçamento
           ElevatedButton(
             onPressed: () {}, // Define a ação do botão (vazia por enquanto)
@@ -62,11 +58,18 @@ class _RotaPageState extends State<RotaPage> {
       child: Center(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              const Text(
-                'PONTO MAIS PRÓXIMO',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, decoration: TextDecoration.underline,), // Define o estilo do texto
+              Container(
+            padding: const EdgeInsets.symmetric(horizontal: 250.0, vertical: 10.0),
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(0, 33, 36, 1), // Cor de fundo
+              borderRadius: BorderRadius.circular(50.0), // Cantos arredondados
+            ),
+                child: const Text(
+                  'LINHAS DISPONIVEIS',       
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white), // Define o estilo do texto
+                ),
               ),
               const SizedBox(height: 15), // Adiciona um espaçamento
               _buildElevatedButton('Azul', Colors.blue, () {}), // Chama o método que cria um botão
