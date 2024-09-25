@@ -61,7 +61,7 @@ class _LinhasPageState extends State<LinhasPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
-            padding: const EdgeInsets.symmetric(horizontal: 250.0, vertical: 10.0),
+            padding: const EdgeInsets.only(left: 90, right: 90),
             decoration: BoxDecoration(
               color: const Color.fromRGBO(0, 33, 36, 1), // Cor de fundo
               borderRadius: BorderRadius.circular(50.0), // Cantos arredondados

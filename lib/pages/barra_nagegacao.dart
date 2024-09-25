@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:rastrobus/pages/Linhas_page.dart';
-import 'Rota_page.dart';
+import 'package:rastrobus/pages/linhas_page.dart';
+import 'package:rastrobus/pages/previssoes_page.dart';
+import 'rota_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class BarraNagegacao extends StatefulWidget {
+  const BarraNagegacao({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<BarraNagegacao> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<BarraNagegacao> {
   int itemSelecionado = 0; // Variável que armazena o índice do item selecionado no BottomNavigationBar.
 
   @override
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage> {
        //dependendo de qual item está selecionado.
         index: itemSelecionado, //Aqui indica qual layout vai ser escolhido com base aonde a pessoa clica
         children: const [
-          Center(child: Text("Previsões")),
+          PrevissoesPage(),
           LinhasPage(),
           RotaPage(), 
         ],
