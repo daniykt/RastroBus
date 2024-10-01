@@ -18,6 +18,8 @@ class _HomePageState extends State<BarraNagegacao> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("RastroBus"),
+        foregroundColor: Colors.white,
+         backgroundColor: const Color(0xFF004445),
       ),
        body: IndexedStack( //Define a parte principal da tela usando o IndexedStack, 
        //que permite mostrar apenas um widget de uma lista, 

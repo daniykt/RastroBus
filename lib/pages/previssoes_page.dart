@@ -22,52 +22,57 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
           Expanded(
             child: _buildMapSection(), // Mapa ocupando a parte superior da tela
           ),
-          _buildBottomSection(), // Parte inferior com o campo de pesquisa e lista
+          _buildBottomSection(),
         ],
       ),
     );
   }
 
-  // Método que constrói a parte inferior da tela
-  Widget _buildBottomSection() {
-    final screenSize = MediaQuery.of(context).size;
-    final listHeight = screenSize.height * 0.25;
-    final vm = Provider.of<RotasPrevistasVIewModel>(context);
-    final rotasprevistas = vm.rotasprevistas;
+// Método que constrói a parte inferior da tela
+Widget _buildBottomSection() {
+  final screenSize = MediaQuery.of(context).size;
+  final listHeight = screenSize.height * 0.25;
+  final vm = Provider.of<RotasPrevistasVIewModel>(context);
+  final rotasprevistas = vm.rotasprevistas;
 
-    return Column(
-      children: [
-        Container(
-          color: const Color(0xFFF0F0F0),
-          padding: const EdgeInsets.all(8.0),
-          child: const TextField(
-            style: TextStyle(color: Color(0xFF424242)),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Pesquise um local de embarque',
+  return Column(
+    children: [
+      Container(
+        color: const Color(0xFFF0F0F0),
+        padding: const EdgeInsets.all(8.0),
+        child: const TextField(
+          style: TextStyle(color: Color(0xFF424242)),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(), // Define a borda padrão
+            labelText: 'Pesquise um local de embarque',
+            labelStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0)), // Define a cor do rótulo
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.blue), // Cor da borda ao focar
             ),
           ),
         ),
-        Container(
-          color: const Color(0xFF002124),
-          child: SizedBox(
-            width: double.maxFinite,
-            height: listHeight,
-            child: ListView.builder(
-              itemCount: rotasprevistas.length,
-              itemBuilder: (context, index) => GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => "",
-                child: RotasprevistasItem(
-                  rotasprevistas: rotasprevistas[index],
-                ),
+      ),
+      Container(
+        color: const Color(0xFF002124),
+        child: SizedBox(
+          width: double.maxFinite,
+          height: listHeight,
+          child: ListView.builder(
+            itemCount: rotasprevistas.length,
+            itemBuilder: (context, index) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => "",
+              child: RotasprevistasItem(
+                rotasprevistas: rotasprevistas[index],
               ),
             ),
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
 
   // Método que constrói o mapa
   Widget _buildMapSection() {
@@ -94,32 +99,3 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
   }
 }
 
-// Método que cria um campo de texto com um rótulo
-Widget _buildTextField(String label) {
-  return TextField(
-    decoration: InputDecoration(
-      border: const OutlineInputBorder(), // Define a borda do campo de texto
-      labelText: label, // Define o rótulo do campo de texto
-      labelStyle:
-          const TextStyle(color: Colors.white), // Define a cor do rótulo
-      focusedBorder: const OutlineInputBorder(
-        borderSide: BorderSide(
-            color: Colors.blue), // Define a cor da borda quando focada
-      ),
-    ),
-  );
-}
-
-    // Método que cria um campo de texto com um rótulo | Cor da borda
- /* Widget _buildTextField(String label) {
-    return TextField(
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(), // Define a borda do campo de texto
-        labelText: label, // Define o rótulo do campo de texto
-        labelStyle: const TextStyle(color: Colors.white), // Define a cor do rótulo
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue), // Define a cor da borda quando focada
-        ),
-      ),
-    );
-  }*/
