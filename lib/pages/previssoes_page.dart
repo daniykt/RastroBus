@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rastrobus/componentes/mapa.dart';
+import 'package:rastrobus/componentes/rotasprevistas_item.dart';
+import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
 class PrevissoesPage extends StatefulWidget {
   const PrevissoesPage({Key? key}) : super(key: key);
@@ -9,75 +12,73 @@ class PrevissoesPage extends StatefulWidget {
 }
 
 class _PrevissoesPageState extends State<PrevissoesPage> {
+  List<dynamic> rotasprevistas = []; // Inicialização da lista de rotas
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          _buildTopSection(), // Parte superior com o campo de pesquisa
           Expanded(
-            child: _buildMapSection(), // Mapa ocupando a parte central da tela
+            child: _buildMapSection(), // Mapa ocupando a parte superior da tela
           ),
-          _buildBottomSection(), // Parte inferior com os botões
+          _buildBottomSection(), // Parte inferior com o campo de pesquisa e lista
         ],
       ),
-    );
-  }
-
-  // Método que constrói a parte superior da tela
-  Widget _buildTopSection() {
-    return Container(
-      color: Colors.lightBlueAccent,
-      padding: const EdgeInsets.all(8.0),
-      child: const TextField(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Pesquise um local de embarque',
-        ),
-      ),
-    );
-  }
-
-  // Método que constrói o mapa (aqui, você pode chamar o widget do seu mapa)
-  Widget _buildMapSection() {
-    return const Column(
-     children: [
-       Expanded(
-         child: SizedBox(
-           width: double.infinity,
-           child: Mapa(),
-         ),
-       ),
-     ],
     );
   }
 
   // Método que constrói a parte inferior da tela
   Widget _buildBottomSection() {
-    return Container(
-      color: Colors.black,
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              _buildButton('Favoritos'),
-              _buildButton('Últimos pontos utilizados'),
-            ],
+    final screenSize = MediaQuery.of(context).size;
+    final listHeight = screenSize.height * 0.25;
+    final vm = Provider.of<RotasPrevistasVIewModel>(context);
+    final rotasprevistas = vm.rotasprevistas;
+
+    return Column(
+      children: [
+        Container(
+          color: const Color(0xFFF0F0F0),
+          padding: const EdgeInsets.all(8.0),
+          child: const TextField(
+            style: TextStyle(color: Color(0xFF424242)),
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Pesquise um local de embarque',
+            ),
           ),
-          const SizedBox(height: 10),
-          const Text(
-            'Nenhum ponto pesquisado.',
-            style: TextStyle(color: Colors.white, height: 10),
+        ),
+        Container(
+          color: const Color(0xFF002124),
+          child: SizedBox(
+            width: double.maxFinite,
+            height: listHeight,
+            child: ListView.builder(
+              itemCount: rotasprevistas.length,
+              itemBuilder: (context, index) => GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => "",
+                child: RotasprevistasItem(
+                  rotasprevistas: rotasprevistas[index],
+                ),
+              ),
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  // Método que constrói um botão na parte inferior
+  // Método que constrói o mapa
+  Widget _buildMapSection() {
+    return const SizedBox(
+      width: double.infinity,
+      child:
+          Mapa(), // Certifique-se de que seu widget Mapa esteja definido corretamente
+    );
+  }
+
+  // Método que constrói um botão na parte inferior (se necessário)
   Widget _buildButton(String text) {
     return ElevatedButton(
       onPressed: () {},
@@ -92,3 +93,33 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
     );
   }
 }
+
+// Método que cria um campo de texto com um rótulo
+Widget _buildTextField(String label) {
+  return TextField(
+    decoration: InputDecoration(
+      border: const OutlineInputBorder(), // Define a borda do campo de texto
+      labelText: label, // Define o rótulo do campo de texto
+      labelStyle:
+          const TextStyle(color: Colors.white), // Define a cor do rótulo
+      focusedBorder: const OutlineInputBorder(
+        borderSide: BorderSide(
+            color: Colors.blue), // Define a cor da borda quando focada
+      ),
+    ),
+  );
+}
+
+    // Método que cria um campo de texto com um rótulo | Cor da borda
+ /* Widget _buildTextField(String label) {
+    return TextField(
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(), // Define a borda do campo de texto
+        labelText: label, // Define o rótulo do campo de texto
+        labelStyle: const TextStyle(color: Colors.white), // Define a cor do rótulo
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.blue), // Define a cor da borda quando focada
+        ),
+      ),
+    );
+  }*/
