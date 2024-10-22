@@ -27,4 +27,6 @@ class Ponto {
   factory Ponto.fromJson(Map<String, dynamic> json) => _$PontoFromJson(json);
 
   toJson() => _$PontoToJson(this);
+
+  
 }
