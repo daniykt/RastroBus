@@ -8,9 +8,7 @@ export repositorio="https://github.com/daniykt/RastroBus.git";
 
 #Daqui pra baixo mexa somente se for realmente necessário ou se souber o que está fazendo :P
 
-export branch_name="RastroBus $(date +%Y%m%d-%H%M%S) - Filtragem de pontos por cor (ATUALIZADO)"
-
-rm -Rf .git
+export branch_name="RastroBus $(date +%Y%m%d-%H%M%S) - Filtragem de pontos por cor (ATUALIZADO) e adicionando as pastas BD e API"
 
 #add linux, mac and windows folders to gitignore
 echo "" >> .gitignore
@@ -31,6 +29,6 @@ git commit -m "added ignored files" .gitignore
 
 git add .
 
-git commit -am "RastroBus - Lendo as tabelas do banco de dados OK - $(date)"
+git commit -am "RastroBus $(date)"
 
-git push origin $branch_name
+git push -u origin $branch_name
