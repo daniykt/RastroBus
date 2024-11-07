@@ -50,10 +50,8 @@ class _LinhasPageState extends State<LinhasPage> {
               _buildElevatedButton('Vermelho', Colors.red,
                   () {}), // Chama o método que cria outro botão
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Verde', Colors.green, () {
-                Navigator.pushNamed(context,
-                    "/rotasprevistas"); // Define a navegação para outra rota
-              }),
+              _buildElevatedButton('Verde', Colors.green, () {}
+              ),
             ],
           ),
         ),
