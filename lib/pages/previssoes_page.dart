@@ -108,3 +108,4 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
     );
   }
 }
+

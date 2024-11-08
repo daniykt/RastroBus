@@ -8,7 +8,7 @@ export repositorio="https://github.com/daniykt/RastroBus.git";
 
 #Daqui pra baixo mexa somente se for realmente necessário ou se souber o que está fazendo :P
 
-export branch_name="RastroBus $(date +%Y%m%d-%H%M%S) - Filtragem de pontos por cor (ATUALIZADO) e adicionando as pastas BD e API"
+export branch_name="RastroBus $(date +%Y%m%d-%H%M%S) - tentando pegar a localização do usuário em tempo real"
 
 #add linux, mac and windows folders to gitignore
 echo "" >> .gitignore
