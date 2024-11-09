@@ -1,0 +1,105 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Autocomplete com Lista Suspensa',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: AutoCompleteTextField(),
+    );
+  }
+}
+
+class AutoCompleteTextField extends StatefulWidget {
+  @override
+  _AutoCompleteTextFieldState createState() => _AutoCompleteTextFieldState();
+}
+
+class _AutoCompleteTextFieldState extends State<AutoCompleteTextField> {
+  // Texto que o usuário digita no TextField
+  TextEditingController _controller = TextEditingController();
+
+  // Lista simulada do "banco de dados"
+  List<String> _allOptions = [
+    'Apple',
+    'Banana',
+    'Grape',
+    'Orange',
+    'Pineapple',
+    'Strawberry',
+    'Watermelon',
+    'Blueberry',
+    'Mango',
+    'Peach',
+  ];
+
+  // Lista que será exibida conforme o filtro
+  List<String> _filteredOptions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredOptions = _allOptions;  // Inicialmente, mostrar todas as opções
+  }
+
+  // Função para filtrar as opções conforme o texto
+  void _filterOptions(String query) {
+    setState(() {
+      _filteredOptions = _allOptions
+          .where((option) => option.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Autocomplete com Lista Suspensa'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            TextField(
+              controller: _controller,
+              decoration: InputDecoration(
+                labelText: 'Pesquise uma fruta...',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (query) {
+                _filterOptions(query);
+              },
+            ),
+            SizedBox(height: 16),
+            // Lista de opções filtradas com base no texto
+            Expanded(
+              child: ListView.builder(
+                itemCount: _filteredOptions.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(_filteredOptions[index]),
+                    onTap: () {
+                      _controller.text = _filteredOptions[index];  // Preenche o campo de texto com a seleção
+                      setState(() {
+                        _filteredOptions = _allOptions;  // Resetar a lista após a seleção
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
