@@ -2,37 +2,64 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rastrobus/componentes/mapa.dart';
 import 'package:rastrobus/componentes/rotasprevistas_item.dart';
+import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/vm/horario_vm.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
+// ignore: must_be_immutable
 class RotasPrevistasPage extends StatelessWidget {
-  const RotasPrevistasPage({super.key});
+  RotasPrevistasPage({super.key, this.selectedColor = ''});
+
+  late String? selectedColor;
+  bool buscarPontoMaisProximo = false;
 
   @override
   Widget build(BuildContext context) {
+
+    Map<String, dynamic>? argumens = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    selectedColor = argumens?['cor'];
+    buscarPontoMaisProximo = argumens?['buscar_ponto_mais_proximo'];
+
+    print(buscarPontoMaisProximo);
+    
+
     final textTheme = Theme.of(context).textTheme;
     final screenSize = MediaQuery.of(context).size;
     final listHeight = screenSize.height * 0.25;
     final vm = Provider.of<RotasPrevistasVIewModel>(context);
-    final rotasprevistas = vm.rotasprevistas;
+    List<Ponto> rotasprevistas = [];
     final vmHorario = Provider.of<HorarioViewModel>(context);
     final horario = vmHorario.horario;
 
+    switch (selectedColor) {
+      case 'azul':
+        rotasprevistas = vm.rotasAzuis();
+        break;
+      case 'verde':
+        rotasprevistas = vm.rotasVerdes();
+        break;
+      case 'vermelho':
+        rotasprevistas = vm.rotasVermelhas();
+        break;
+      default:
+        rotasprevistas = vm.rotasprevistas;
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Previssões",
+          "Previsões",
           style: textTheme.titleLarge?.copyWith(color: const Color(0xFFF0F0F0)),
         ),
         backgroundColor: const Color(0xFF004445),
       ),
       body: Column(
         children: [
-          const Expanded(
+          Expanded(
             child: SizedBox(
               width: double.infinity,
-              child: Mapa(),
+              child: Mapa(rotasprevistas: rotasprevistas, buscarPontoMaisProximo: buscarPontoMaisProximo,),
             ),
           ),
           Container(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rastrobus/componentes/mapa.dart';
 import 'package:rastrobus/componentes/rotasprevistas_item.dart';
+import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/vm/horario_vm.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
@@ -13,15 +14,17 @@ class PrevissoesPage extends StatefulWidget {
 }
 
 class _PrevissoesPageState extends State<PrevissoesPage> {
-  List<dynamic> rotasprevistas = []; // Inicialização da lista de rotas
+  List<Ponto> rotasprevistas = []; // Inicialização da lista de rotas
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<RotasPrevistasVIewModel>(context);
+    rotasprevistas = vm.rotasprevistas;
     return Scaffold(
       body: Column(
         children: <Widget>[
           Expanded(
-            child: _buildMapSection(), // Mapa ocupando a parte superior da tela
+            child: _buildMapSection(rotasprevistas), // Mapa ocupando a parte superior da tela
           ),
           _buildBottomSection(),
         ],
@@ -33,8 +36,6 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
   Widget _buildBottomSection() {
     final screenSize = MediaQuery.of(context).size;
     final listHeight = screenSize.height * 0.25;
-    final vm = Provider.of<RotasPrevistasVIewModel>(context);
-    final rotasprevistas = vm.rotasprevistas;
     final vmHorario = Provider.of<HorarioViewModel>(context);
     final horario = vmHorario.horario;
 
@@ -85,11 +86,11 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
   }
 
   // Método que constrói o mapa
-  Widget _buildMapSection() {
-    return const SizedBox(
+  Widget _buildMapSection(List<Ponto> rotasprevistas) {
+    return SizedBox(
       width: double.infinity,
       child:
-          Mapa(), // Certifique-se de que seu widget Mapa esteja definido corretamente
+          Mapa(rotasprevistas: rotasprevistas, buscarPontoMaisProximo: false,), // Certifique-se de que seu widget Mapa esteja definido corretamente
     );
   }
 
