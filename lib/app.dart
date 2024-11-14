@@ -20,7 +20,7 @@ class Aplicacao extends StatelessWidget {
         "/linhapage": (_) => const LinhasPage(),
         "/BarraNavegacao": (_) => const BarraNagegacao(),
         "/rotapage": (_) => const RotaPage(),
-        "/rotasprevistas": (_) => const RotasPrevistasPage(),
+        "/rotasprevistas": (_) => RotasPrevistasPage(),
         "/detalheponto": (_) => const DetalhePonto(),
       },
     );

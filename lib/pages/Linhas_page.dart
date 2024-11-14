@@ -44,15 +44,25 @@ class _LinhasPageState extends State<LinhasPage> {
                 ),
               ),
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Azul', Colors.blue,
-                  () {}), // Chama o método que cria um botão
+              _buildElevatedButton('Azul', Colors.blue, () {
+                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                  'cor': 'azul',
+                  'buscar_ponto_mais_proximo': false
+                });
+              }), // Chama o método que cria um botão
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Vermelho', Colors.red,
-                  () {}), // Chama o método que cria outro botão
+              _buildElevatedButton('Vermelho', Colors.red, () {
+                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                  'cor': 'vermelho',
+                  'buscar_ponto_mais_proximo': false
+                });
+              }), // Chama o método que cria outro botão
               const SizedBox(height: 15), // Adiciona um espaçamento
               _buildElevatedButton('Verde', Colors.green, () {
-                Navigator.pushNamed(context,
-                    "/rotasprevistas"); // Define a navegação para outra rota
+                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                  'cor': 'verde',
+                  'buscar_ponto_mais_proximo': false
+                });
               }),
             ],
           ),

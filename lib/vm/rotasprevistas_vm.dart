@@ -34,6 +34,18 @@ class RotasPrevistasVIewModel extends ChangeNotifier {
     return rotasprevistas.where((rp) => rp.id == id).firstOrNull;
   }
 
+   List<Ponto> rotasVerdes(){
+    return rotasprevistas.where((rota)=> rota.imagem == 'imagem-verde').toList();
+  }
+
+  List<Ponto> rotasVermelhas(){
+    return rotasprevistas.where((rota)=> rota.imagem == 'imagem-vermelha').toList();
+  }
+
+  List<Ponto> rotasAzuis(){
+    return rotasprevistas.where((rota)=> rota.imagem == 'imagem-azul').toList();
+  }
+
   static ChangeNotifierProvider<RotasPrevistasVIewModel> novo() =>
       ChangeNotifierProvider(
         create: (_) => RotasPrevistasVIewModel(),

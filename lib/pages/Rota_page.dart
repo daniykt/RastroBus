@@ -98,7 +98,7 @@ class _RotaPageState extends State<RotaPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => Mapa(
-                    pontosFiltrados: rotasFiltradas
+                    pontosFiltrados: rotasFiltradas, buscarPontoMaisProximo: [], rotasprevistas: const [],
                   ),
                 ),
               );

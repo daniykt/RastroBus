@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/util/cor.dart';
+import 'dart:math';
 
 class Mapa extends StatefulWidget {
   final List<Ponto> pontosFiltrados;
 
-  const Mapa({super.key, required this.pontosFiltrados});
+  const Mapa({super.key, required this.pontosFiltrados, required this.rotasprevistas,
+  required this.buscarPontoMaisProximo});
 
+   List<Ponto> rotasprevistas = [];
+  bool buscarPontoMaisProximo;
+  
   @override
   State<Mapa> createState() => _MapaState();
 }

@@ -6,6 +6,7 @@ import 'package:rastrobus/componentes/rotasprevistas_item.dart';
 import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/vm/horario_vm.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
+import 'package:rastrobus/entidade/ponto.dart';
 
 class PrevissoesPage extends StatefulWidget {
   const PrevissoesPage({
@@ -49,11 +50,13 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
 
   @override
   Widget build(BuildContext context) {
+        final vm = Provider.of<RotasPrevistasVIewModel>(context);
+    rotasprevistas = vm.rotasprevistas;
     return Scaffold(
       body: Column(
         children: <Widget>[
           Expanded(
-            child: _buildMapSection(), // Mapa ocupando a parte superior da tela
+            child: _buildMapSection(rotasprevistas), // Mapa ocupando a parte superior da tela
           ),
           _buildBottomSection(),
         ],
@@ -118,12 +121,11 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
   }
 
   // Método que constrói o mapa
-  Widget _buildMapSection() {
-    return const SizedBox(
+ Widget _buildMapSection(List<Ponto> rotasprevistas) {
+    return SizedBox(
       width: double.infinity,
-      child: Mapa(
-        pontosFiltrados: [],
-      ), // Certifique-se de que seu widget Mapa esteja definido corretamente
+      child:
+          Mapa(rotasprevistas: rotasprevistas, buscarPontoMaisProximo: false,), // Certifique-se de que seu widget Mapa esteja definido corretamente
     );
   }
 
