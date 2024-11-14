@@ -8,4 +8,8 @@ class RepositorioRotasprevistas {
   Future<List<Ponto>> select() {
     return _rest.getPontos();
   }
+
+  Future<Ponto> selectById(int id) {
+    return _rest.getPontoById(id);
+  }
 }

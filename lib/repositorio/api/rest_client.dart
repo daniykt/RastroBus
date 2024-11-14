@@ -12,6 +12,9 @@ abstract class RestClient {
   @GET("/ponto")
   Future<List<Ponto>> getPontos();
 
+  @GET("/ponto/{id}")
+  Future<Ponto> getPontoById(@Path("id") int id);
+
   @GET("/horario")
   Future<List<Horario>> getHorario();
 }

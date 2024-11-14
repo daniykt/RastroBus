@@ -17,6 +17,19 @@ class RotasPrevistasVIewModel extends ChangeNotifier {
     return this;
   }
 
+   Future<List<Ponto>> loadPontos() async {
+    final items = await RepositorioRotasprevistas().select();
+    rotasprevistas = items;
+
+    notifyListeners();
+
+    return items;
+  }
+
+  Future<Ponto> loadPontoById(int id) async {
+    return await RepositorioRotasprevistas().selectById(id);
+  }
+
   Ponto? getById(int id) {
     return rotasprevistas.where((rp) => rp.id == id).firstOrNull;
   }
@@ -37,4 +50,7 @@ class RotasPrevistasVIewModel extends ChangeNotifier {
       ChangeNotifierProvider(
         create: (_) => RotasPrevistasVIewModel().useLista(),
       );
+
+       loadHorarioChegadaByPontoId(int id) {}
 }
+

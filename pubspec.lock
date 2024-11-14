@@ -247,26 +247,26 @@ packages:
     dependency: transitive
     description:
       name: flutter_osm_interface
-      sha256: "9243c552607bc4a5db318d9e5c8b7aad625a2ccfae314b85420eb081bcfcd65f"
+      sha256: a46a3973b21176582d78db115cceaf4ea730614bd3471119b9958108d884fa0f
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.3.2"
   flutter_osm_plugin:
     dependency: "direct main"
     description:
       name: flutter_osm_plugin
-      sha256: a2120201b68af76706b811404356038ba85ea200966a5d8dfb1803fda4c0e20b
+      sha256: "5ea3fbd8614a128f4962b39261861a377781b7b3a7cefdcaf47b8457a371c56c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "1.3.5"
   flutter_osm_web:
     dependency: transitive
     description:
       name: flutter_osm_web
-      sha256: "4abc5ce6954ea9d34a3ec70da3cdc93f9846c271484ffc7003f2fd792783639b"
+      sha256: "8542dc76aee29479b75fc79861ac748cd0a58482b71f0dfd116af6306e377300"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.3.5"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -297,10 +297,10 @@ packages:
     dependency: "direct main"
     description:
       name: geolocator
-      sha256: f4efb8d3c4cdcad2e226af9661eb1a0dd38c71a9494b22526f9da80ab79520e5
+      sha256: d2ec66329cab29cb297d51d96c067d457ca519dca8589665fa0b82ebacb7dbe4
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.1"
+    version: "13.0.2"
   geolocator_android:
     dependency: transitive
     description:
@@ -313,10 +313,10 @@ packages:
     dependency: transitive
     description:
       name: geolocator_apple
-      sha256: bc2aca02423ad429cb0556121f56e60360a2b7d694c8570301d06ea0c00732fd
+      sha256: "6154ea2682563f69fc0125762ed7e91e7ed85d0b9776595653be33918e064807"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.7"
+    version: "2.3.8+1"
   geolocator_platform_interface:
     dependency: transitive
     description:
@@ -329,10 +329,10 @@ packages:
     dependency: transitive
     description:
       name: geolocator_web
-      sha256: "102e7da05b48ca6bf0a5bda0010f886b171d1a08059f01bfe02addd0175ebece"
+      sha256: "2ed69328e05cd94e7eb48bb0535f5fc0c0c44d1c4fa1e9737267484d05c29b5e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "4.1.1"
   geolocator_windows:
     dependency: transitive
     description:
@@ -525,6 +525,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  open_geocoder:
+    dependency: "direct main"
+    description:
+      name: open_geocoder
+      sha256: "5f9998076f0b6b5be471876fe4e28f26bfb48edf2fef7cf0451fcea0f6e954c6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   package_config:
     dependency: transitive
     description:
@@ -934,10 +942,10 @@ packages:
     dependency: transitive
     description:
       name: web
-      sha256: "97da13628db363c635202ad97068d47c5b8aa555808e7a9411963c533b449b27"
+      sha256: cd3543bd5798f6ad290ea73d210f423502e71900302dde696f8bff84bf89a1cb
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.1"
+    version: "1.1.0"
   web_socket:
     dependency: transitive
     description:

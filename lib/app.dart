@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rastrobus/pages/barra_nagegacao.dart';
+import 'package:rastrobus/pages/detalhe_ponto.dart';
 import 'package:rastrobus/pages/linhas_page.dart';
 import 'package:rastrobus/pages/previssoes_page.dart';
 import 'package:rastrobus/pages/rota_page.dart';
@@ -19,7 +20,8 @@ class Aplicacao extends StatelessWidget {
         "/linhapage": (_) => const LinhasPage(),
         "/BarraNavegacao": (_) => const BarraNagegacao(),
         "/rotapage": (_) => const RotaPage(),
-        "/rotasprevistas": (_) => RotasPrevistasPage(),
+        "/rotasprevistas": (_) => const RotasPrevistasPage(),
+        "/detalheponto": (_) => const DetalhePonto(),
       },
     );
   }

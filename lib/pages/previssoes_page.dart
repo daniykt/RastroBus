@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:rastrobus/componentes/mapa.dart';
 import 'package:rastrobus/componentes/rotasprevistas_item.dart';
@@ -14,17 +15,43 @@ class PrevissoesPage extends StatefulWidget {
 }
 
 class _PrevissoesPageState extends State<PrevissoesPage> {
-  List<Ponto> rotasprevistas = []; // Inicialização da lista de rotas
+  List<Ponto> rotasprevistas = [];
+  List<Ponto> rotasFiltradas = [];
+  final _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _searchController.addListener(_filtraRotas);
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      final vm = Provider.of<RotasPrevistasVIewModel>(context, listen: false);
+      vm.loadPontos().then((pontos) {
+        setState(() {
+          rotasprevistas = pontos;
+          rotasFiltradas = rotasprevistas;
+        });
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<RotasPrevistasVIewModel>(context);
     rotasprevistas = vm.rotasprevistas;
+
     return Scaffold(
       body: Column(
         children: <Widget>[
           Expanded(
-            child: _buildMapSection(rotasprevistas), // Mapa ocupando a parte superior da tela
+            child: _buildMapSection(rotasFiltradas), // Usando rotasFiltradas
           ),
           _buildBottomSection(),
         ],
@@ -32,7 +59,7 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
     );
   }
 
-// Método que constrói a parte inferior da tela
+  // Método que constrói a parte inferior da tela
   Widget _buildBottomSection() {
     final screenSize = MediaQuery.of(context).size;
     final listHeight = screenSize.height * 0.25;
@@ -44,17 +71,19 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
         Container(
           color: const Color(0xFFF0F0F0),
           padding: const EdgeInsets.all(8.0),
-          child: const TextField(
-            style: TextStyle(color: Color(0xFF424242)),
-            decoration: InputDecoration(
+          child: TextField(
+            controller: _searchController,
+            style: const TextStyle(color: Color(0xFF424242)),
+            decoration: const InputDecoration(
               border: OutlineInputBorder(), // Define a borda padrão
               labelText: 'Pesquise um local de embarque',
               labelStyle: TextStyle(
-                  color:
-                      Color.fromARGB(255, 0, 0, 0)), // Define a cor do rótulo
+                color: Color.fromARGB(255, 0, 0, 0),
+              ), // Define a cor do rótulo
               focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Colors.blue), // Cor da borda ao focar
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                ), // Cor da borda ao focar
               ),
             ),
           ),
@@ -65,17 +94,20 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
             width: double.maxFinite,
             height: listHeight,
             child: ListView.builder(
-              itemCount: rotasprevistas.length,
+              itemCount: rotasFiltradas.length,
               itemBuilder: (context, index) => GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () => "",
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  "/detalheponto",
+                  arguments: rotasFiltradas[index].id,
+                ),
                 child: RotasprevistasItem(
-                  rotasprevistas: rotasprevistas[index],
+                  rotasprevistas: rotasFiltradas[index],
                   horario: horario[index],
-                  cor: Color(int.parse(rotasprevistas[index].cor.substring(1), radix: 16) + 0xFF000000), //Converte a cor hexadecimal para um objeto Color
-                  //verde: #00FF00
-                  //azul: #0000FF
-                  //vermelho: #FF0000
+                  cor: Color(int.parse(rotasFiltradas[index].cor.substring(1),
+                          radix: 16) +
+                      0xFF000000), // Conversão de cor hex para objeto Color
                 ),
               ),
             ),
@@ -86,15 +118,18 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
   }
 
   // Método que constrói o mapa
-  Widget _buildMapSection(List<Ponto> rotasprevistas) {
+  Widget _buildMapSection(List<Ponto> pontosFiltrados) {
     return SizedBox(
       width: double.infinity,
-      child:
-          Mapa(rotasprevistas: rotasprevistas, buscarPontoMaisProximo: false,), // Certifique-se de que seu widget Mapa esteja definido corretamente
+      child: Mapa(
+        rotasprevistas: pontosFiltrados,
+        buscarPontoMaisProximo: false,
+        pontosFiltrados: pontosFiltrados, // Adição dos pontos filtrados ao mapa
+      ),
     );
   }
 
-  // Método que constrói um botão na parte inferior (se necessário)
+  // Método para construir o botão
   Widget _buildButton(String text) {
     return ElevatedButton(
       onPressed: () {},
@@ -108,4 +143,18 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
       ),
     );
   }
+
+  void _filtraRotas() {
+    final query = _searchController.text.toLowerCase();
+
+    setState(() {
+      rotasFiltradas = rotasprevistas
+          .where((rota) => rota.endereco.toLowerCase().contains(query))
+          .toList();
+    });
+  }
+}
+
+extension on RotasPrevistasVIewModel {
+  loadPontos() {}
 }

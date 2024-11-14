@@ -3,13 +3,20 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:rastrobus/entidade/ponto.dart';
 import 'dart:math';
 
+import 'package:rastrobus/util/cor.dart';
 
 // ignore: must_be_immutable
 class Mapa extends StatefulWidget {
-  Mapa({super.key, required this.rotasprevistas, required this.buscarPontoMaisProximo});
+   const Mapa({
+    super.key,
+    required this.rotasprevistas,
+    required this.pontosFiltrados,
+    required this.buscarPontoMaisProximo,
+  });
 
-  List<Ponto> rotasprevistas = [];
-  bool buscarPontoMaisProximo;
+  final List<Ponto> pontosFiltrados;
+  final List<Ponto> rotasprevistas;
+  final bool buscarPontoMaisProximo;
 
   @override
   State<Mapa> createState() => _MapaState();
@@ -17,14 +24,19 @@ class Mapa extends StatefulWidget {
 
 class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
   late MapController controller;
+  late List<Ponto> pontosFiltrados;
 
   @override
   void initState() {
     super.initState();
+
+    // Atribua diretamente os pontosFiltrados que foram passados para o widget
+    pontosFiltrados = widget.pontosFiltrados;
+
     controller = MapController(
       initMapWithUserPosition: const UserTrackingOption(
-        enableTracking: true,  
-        unFollowUser: false, 
+        enableTracking: true,
+        unFollowUser: false,
       ),
     );
   }
@@ -47,17 +59,13 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-
-
-    if (widget.rotasprevistas.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     final tema = Theme.of(context);
+
     final points = <StaticPositionGeoPoint>[];  // Lista de pontos a serem exibidos no mapa
+    final selecionados = <Ponto>[];
 
-    if(widget.buscarPontoMaisProximo){
-      Ponto ponto = findNearestPonto(-48.3688448,-21.6006656 , widget.rotasprevistas); //PEGAR A LOCALIZACAO ATUAL AO INVES DE UMA LOCALIZACAO FIXA
+    if (widget.buscarPontoMaisProximo) {
+      Ponto ponto = findNearestPonto(-48.3688448, -21.6006656, widget.rotasprevistas);  // Pega a localização atual ao invés de uma fixa
       Color iconColor = _getColorFromEnum(ponto.cor);  // Definindo a cor do marcador
 
       points.add(
@@ -65,66 +73,103 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
           ponto.id.toString(),
           MarkerIcon(
             icon: Icon(
-              Icons.directions_bus, 
-              color: iconColor, 
+              Icons.directions_bus,
+              color: iconColor,
               size: 40,
             ),
           ),
-          [GeoPoint(latitude: ponto.latitude, longitude: ponto.longitude)],  
+          [GeoPoint(latitude: ponto.latitude, longitude: ponto.longitude)],
         ),
       );
-    }else{
+    } else {
       for (var ponto in widget.rotasprevistas) {
-      Color iconColor = _getColorFromEnum(ponto.cor);  // Definindo a cor do marcador
-
-      points.add(
-        StaticPositionGeoPoint(
-          ponto.id.toString(),
-          MarkerIcon(
-            icon: Icon(
-              Icons.directions_bus, 
-              color: iconColor, 
-              size: 40,
+        Color iconColor = _getColorFromEnum(ponto.cor);  // Definindo a cor do marcador
+        points.add(
+          StaticPositionGeoPoint(
+            ponto.id.toString(),
+            MarkerIcon(
+              icon: Icon(
+                Icons.directions_bus,
+                color: iconColor,
+                size: 40,
+              ),
             ),
+            [GeoPoint(latitude: ponto.latitude, longitude: ponto.longitude)],
           ),
-          [GeoPoint(latitude: ponto.latitude, longitude: ponto.longitude)],  
-        ),
-      );
-    }
+        );
+      }
+
+      points.addAll(pontosFiltrados.map((ponto) => buildMarker(
+          pontosFiltrados.indexOf(ponto), pontosFiltrados, selecionados)));
     }
 
-    // Adicionando os pontos de rotas ao mapa
-    
-
-    // Retorna o widget do mapa com as opções configuradas
     return OSMFlutter(
       controller: controller,  // Controlador do mapa
-      onGeoPointClicked: (point) {}, 
+      onGeoPointClicked: (point) {
+        final ponto = findByGeoPoint(pontosFiltrados, point);
+        if (ponto != null) {
+          Navigator.pushNamed(context, "/detalheponto", arguments: ponto.id);
+        }
+      },
       osmOption: OSMOption(
         zoomOption: const ZoomOption(
-          initZoom: 17,  
-          minZoomLevel: 2,  
-          maxZoomLevel: 19, 
-          stepZoom: 1.0,  
+          initZoom: 17,
+          minZoomLevel: 2,
+          maxZoomLevel: 19,
+          stepZoom: 1.0,
         ),
-        staticPoints: points,  
+        staticPoints: points,  // Adiciona todos os pontos
         userLocationMarker: UserLocationMaker(
           personMarker: MarkerIcon(
             icon: Icon(
-              Icons.location_pin,  
-              color: tema.colorScheme.primary,  
+              Icons.location_pin,
+              color: tema.colorScheme.primary,
               size: 32,
             ),
           ),
           directionArrowMarker: const MarkerIcon(
             icon: Icon(
-              Icons.double_arrow, 
+              Icons.double_arrow,
               size: 32,
             ),
           ),
         ),
       ),
     );
+  }
+
+  StaticPositionGeoPoint buildMarker(
+    int index,
+    List<Ponto> pontos,
+    List<Ponto> selecionados,
+  ) {
+    final ponto = pontos[index];
+    final selected = selecionados.indexWhere((p) => p.id == ponto.id) >= 0;
+
+    return StaticPositionGeoPoint(
+      "${ponto.id}",
+      MarkerIcon(
+        icon: Icon(
+          Icons.bus_alert,
+          size: 32,
+          color: selected ? Colors.cyan : HexColor.fromHex(ponto.cor),
+        ),
+      ),
+      [
+        GeoPoint(
+          latitude: ponto.latitude,
+          longitude: ponto.longitude,
+        ),
+      ],
+    );
+  }
+
+  Ponto? findByGeoPoint(List<Ponto> pontos, GeoPoint geoPoint) {
+    return pontos
+        .where((p) =>
+            p.latitude == geoPoint.latitude &&
+            p.longitude == geoPoint.longitude)
+        .firstOrNull;
   }
 
   Ponto findNearestPonto(double latitude, double longitude, List<Ponto> pontos) {
@@ -148,23 +193,24 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
     return nearestPonto!;
   }
 
-double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-  const double R = 6371; // Raio da Terra em km
-  double dLat = _degToRad(lat2 - lat1);
-  double dLon = _degToRad(lon2 - lon1);
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const double R = 6371; // Raio da Terra em km
+    double dLat = _degToRad(lat2 - lat1);
+    double dLon = _degToRad(lon2 - lon1);
 
-  double a = sin(dLat / 2) * sin(dLat / 2) +
-      cos(_degToRad(lat1)) * cos(_degToRad(lat2)) *
-      sin(dLon / 2) * sin(dLon / 2);
-  double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    double a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_degToRad(lat1)) * cos(_degToRad(lat2)) *
+        sin(dLon / 2) * sin(dLon / 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
-  return R * c; // Distância em km
-}
+    return R * c; // Distância em km
+  }
 
-double _degToRad(double deg) {
-  return deg * (pi / 180);
-}
+  double _degToRad(double deg) {
+    return deg * (pi / 180);
+  }
 
   @override
-  bool get wantKeepAlive => true;  // Mantém o estado da tela (útil quando a tela é trocada)
+  bool get wantKeepAlive => true;
+  
 }

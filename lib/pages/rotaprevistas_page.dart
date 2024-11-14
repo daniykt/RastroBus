@@ -6,32 +6,27 @@ import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/vm/horario_vm.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
-// ignore: must_be_immutable
 class RotasPrevistasPage extends StatelessWidget {
-  RotasPrevistasPage({super.key, this.selectedColor = ''});
-
-  late String? selectedColor;
-  bool buscarPontoMaisProximo = false;
+  const RotasPrevistasPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-
-    Map<String, dynamic>? argumens = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
-    selectedColor = argumens?['cor'];
-    buscarPontoMaisProximo = argumens?['buscar_ponto_mais_proximo'];
-
-    print(buscarPontoMaisProximo);
-    
-
     final textTheme = Theme.of(context).textTheme;
     final screenSize = MediaQuery.of(context).size;
     final listHeight = screenSize.height * 0.25;
+
+    // Obtendo os parâmetros passados via navegação (se houver)
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final selectedColor = arguments?['cor'];
+    final buscarPontoMaisProximo = arguments?['buscar_ponto_mais_proximo'] ?? false;
+
+    // ViewModels para obter as rotas previstas e horários
     final vm = Provider.of<RotasPrevistasVIewModel>(context);
-    List<Ponto> rotasprevistas = [];
     final vmHorario = Provider.of<HorarioViewModel>(context);
     final horario = vmHorario.horario;
 
+    // Filtrando as rotas conforme a cor selecionada
+    List<Ponto> rotasprevistas = [];
     switch (selectedColor) {
       case 'azul':
         rotasprevistas = vm.rotasAzuis();
@@ -59,7 +54,10 @@ class RotasPrevistasPage extends StatelessWidget {
           Expanded(
             child: SizedBox(
               width: double.infinity,
-              child: Mapa(rotasprevistas: rotasprevistas, buscarPontoMaisProximo: buscarPontoMaisProximo,),
+              child: Mapa(
+                rotasprevistas: rotasprevistas,
+                buscarPontoMaisProximo: buscarPontoMaisProximo, pontosFiltrados: [],
+              ),
             ),
           ),
           Container(
@@ -71,14 +69,15 @@ class RotasPrevistasPage extends StatelessWidget {
                 itemCount: rotasprevistas.length,
                 itemBuilder: (context, index) => GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: () => "",
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    "/detalheponto",
+                    arguments: rotasprevistas[index].id,
+                  ),
                   child: RotasprevistasItem(
                     rotasprevistas: rotasprevistas[index],
                     horario: horario[index],
-                    cor: Color(int.parse(rotasprevistas[index].cor.substring(1), radix: 16) + 0xFF000000), //Converte a cor hexadecimal para um objeto Color
-                    //verde: #00FF00
-                    //azul: #0000FF
-                    //vermelho: #FF0000
+                    cor: Color(int.parse(rotasprevistas[index].cor.substring(1), radix: 16) + 0xFF000000), // Converte a cor hexadecimal para um objeto Color
                   ),
                 ),
               ),
@@ -89,4 +88,3 @@ class RotasPrevistasPage extends StatelessWidget {
     );
   }
 }
-
