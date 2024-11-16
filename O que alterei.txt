@@ -1,0 +1,3 @@
+O que alterei:
+Acabei e tela de Detalhes
+Fiz uma leve mudança nas telas Previsões, Linhas e Rotas
