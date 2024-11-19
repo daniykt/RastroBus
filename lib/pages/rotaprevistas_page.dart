@@ -16,9 +16,11 @@ class RotasPrevistasPage extends StatelessWidget {
     final listHeight = screenSize.height * 0.25;
 
     // Obtendo os parâmetros passados via navegação (se houver)
-    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final selectedColor = arguments?['cor'];
-    final buscarPontoMaisProximo = arguments?['buscar_ponto_mais_proximo'] ?? false;
+    final buscarPontoMaisProximo =
+        arguments?['buscar_ponto_mais_proximo'] ?? false;
 
     // ViewModels para obter as rotas previstas e horários
     final vm = Provider.of<RotasPrevistasVIewModel>(context);
@@ -28,13 +30,13 @@ class RotasPrevistasPage extends StatelessWidget {
     // Filtrando as rotas conforme a cor selecionada
     List<Ponto> rotasprevistas = [];
     switch (selectedColor) {
-      case 'azul':
+      case '#0000FF':
         rotasprevistas = vm.rotasAzuis();
         break;
-      case 'verde':
+      case '#00FF00':
         rotasprevistas = vm.rotasVerdes();
         break;
-      case 'vermelho':
+      case '#FF0000':
         rotasprevistas = vm.rotasVermelhas();
         break;
       default:
@@ -56,7 +58,8 @@ class RotasPrevistasPage extends StatelessWidget {
               width: double.infinity,
               child: Mapa(
                 rotasprevistas: rotasprevistas,
-                buscarPontoMaisProximo: buscarPontoMaisProximo, pontosFiltrados: [],
+                buscarPontoMaisProximo: buscarPontoMaisProximo,
+                pontosFiltrados: const [],
               ),
             ),
           ),
@@ -77,7 +80,9 @@ class RotasPrevistasPage extends StatelessWidget {
                   child: RotasprevistasItem(
                     rotasprevistas: rotasprevistas[index],
                     horario: horario[index],
-                    cor: Color(int.parse(rotasprevistas[index].cor.substring(1), radix: 16) + 0xFF000000), // Converte a cor hexadecimal para um objeto Color
+                    cor: Color(int.parse(rotasprevistas[index].cor.substring(1),
+                            radix: 16) +
+                        0xFF000000), // Converte a cor hexadecimal para um objeto Color
                   ),
                 ),
               ),

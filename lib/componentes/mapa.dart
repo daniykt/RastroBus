@@ -7,7 +7,7 @@ import 'package:rastrobus/util/cor.dart';
 
 // ignore: must_be_immutable
 class Mapa extends StatefulWidget {
-   const Mapa({
+  const Mapa({
     super.key,
     required this.rotasprevistas,
     required this.pontosFiltrados,
@@ -45,13 +45,13 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
   Color _getColorFromEnum(String enumValue) {
     switch (enumValue.toUpperCase()) {
       case '#FF0000':
-        return const Color(0xFFFF0000);  // Cor vermelha
+        return const Color(0xFFFF0000); // Cor vermelha
       case '#00FF00':
-        return const Color(0xFF00FF00);  // Cor verde
+        return const Color(0xFF00FF00); // Cor verde
       case '#0000FF':
-        return const Color(0xFF0000FF);  // Cor azul
+        return const Color(0xFF0000FF); // Cor azul
       default:
-        return Colors.black;  // Cor padrão (preta)
+        return Colors.black; // Cor padrão (preta)
     }
   }
 
@@ -61,19 +61,25 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
     super.build(context);
     final tema = Theme.of(context);
 
-    final points = <StaticPositionGeoPoint>[];  // Lista de pontos a serem exibidos no mapa
+    final points =
+        <StaticPositionGeoPoint>[]; // Lista de pontos a serem exibidos no mapa
     final selecionados = <Ponto>[];
 
     if (widget.buscarPontoMaisProximo) {
-      Ponto ponto = findNearestPonto(-48.3688448, -21.6006656, widget.rotasprevistas);  // Pega a localização atual ao invés de uma fixa
-      Color iconColor = _getColorFromEnum(ponto.cor);  // Definindo a cor do marcador
+      Ponto ponto = findNearestPonto(
+          -48.3688448,
+          -21.6006656,
+          widget
+              .rotasprevistas); // Pega a localização atual ao invés de uma fixa
+      Color iconColor =
+          _getColorFromEnum(ponto.cor); // Definindo a cor do marcador
 
       points.add(
         StaticPositionGeoPoint(
           ponto.id.toString(),
           MarkerIcon(
             icon: Icon(
-              Icons.directions_bus,
+              Icons.location_pin,
               color: iconColor,
               size: 40,
             ),
@@ -83,13 +89,14 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
       );
     } else {
       for (var ponto in widget.rotasprevistas) {
-        Color iconColor = _getColorFromEnum(ponto.cor);  // Definindo a cor do marcador
+        Color iconColor =
+            _getColorFromEnum(ponto.cor); // Definindo a cor do marcador
         points.add(
           StaticPositionGeoPoint(
             ponto.id.toString(),
             MarkerIcon(
               icon: Icon(
-                Icons.directions_bus,
+                Icons.location_pin,
                 color: iconColor,
                 size: 40,
               ),
@@ -104,7 +111,7 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
     }
 
     return OSMFlutter(
-      controller: controller,  // Controlador do mapa
+      controller: controller, // Controlador do mapa
       onGeoPointClicked: (point) {
         final ponto = findByGeoPoint(pontosFiltrados, point);
         if (ponto != null) {
@@ -118,12 +125,12 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
           maxZoomLevel: 19,
           stepZoom: 1.0,
         ),
-        staticPoints: points,  // Adiciona todos os pontos
+        staticPoints: points, // Adiciona todos os pontos
         userLocationMarker: UserLocationMaker(
-          personMarker: MarkerIcon(
+          personMarker: const MarkerIcon(
             icon: Icon(
-              Icons.location_pin,
-              color: tema.colorScheme.primary,
+              Icons.person_pin,
+              color: Colors.blue,
               size: 32,
             ),
           ),
@@ -150,7 +157,7 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
       "${ponto.id}",
       MarkerIcon(
         icon: Icon(
-          Icons.bus_alert,
+          Icons.location_pin,
           size: 32,
           color: selected ? Colors.cyan : HexColor.fromHex(ponto.cor),
         ),
@@ -172,7 +179,8 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
         .firstOrNull;
   }
 
-  Ponto findNearestPonto(double latitude, double longitude, List<Ponto> pontos) {
+  Ponto findNearestPonto(
+      double latitude, double longitude, List<Ponto> pontos) {
     Ponto? nearestPonto;
     double shortestDistance = double.infinity;
 
@@ -199,8 +207,10 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
     double dLon = _degToRad(lon2 - lon1);
 
     double a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_degToRad(lat1)) * cos(_degToRad(lat2)) *
-        sin(dLon / 2) * sin(dLon / 2);
+        cos(_degToRad(lat1)) *
+            cos(_degToRad(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
     return R * c; // Distância em km
@@ -212,5 +222,4 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
 
   @override
   bool get wantKeepAlive => true;
-  
 }

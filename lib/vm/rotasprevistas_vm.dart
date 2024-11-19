@@ -17,7 +17,7 @@ class RotasPrevistasVIewModel extends ChangeNotifier {
     return this;
   }
 
-   Future<List<Ponto>> loadPontos() async {
+  Future<List<Ponto>> loadPontos() async {
     final items = await RepositorioRotasprevistas().select();
     rotasprevistas = items;
 
@@ -34,16 +34,16 @@ class RotasPrevistasVIewModel extends ChangeNotifier {
     return rotasprevistas.where((rp) => rp.id == id).firstOrNull;
   }
 
-  List<Ponto> rotasVerdes(){
-    return rotasprevistas.where((rota)=> rota.imagem == 'imagem-verde').toList();
+  List<Ponto> rotasVerdes() {
+    return rotasprevistas.where((rota) => rota.cor == '#00FF00').toList();
   }
 
-  List<Ponto> rotasVermelhas(){
-    return rotasprevistas.where((rota)=> rota.imagem == 'imagem-vermelha').toList();
+  List<Ponto> rotasVermelhas() {
+    return rotasprevistas.where((rota) => rota.cor == '#FF0000').toList();
   }
 
-  List<Ponto> rotasAzuis(){
-    return rotasprevistas.where((rota)=> rota.imagem == 'imagem-azul').toList();
+  List<Ponto> rotasAzuis() {
+    return rotasprevistas.where((rota) => rota.cor == '#0000FF').toList();
   }
 
   static ChangeNotifierProvider<RotasPrevistasVIewModel> novo() =>
@@ -51,6 +51,5 @@ class RotasPrevistasVIewModel extends ChangeNotifier {
         create: (_) => RotasPrevistasVIewModel().useLista(),
       );
 
-       loadHorarioChegadaByPontoId(int id) {}
+  loadHorarioChegadaByPontoId(int id) {}
 }
-

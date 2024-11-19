@@ -11,20 +11,18 @@ class RotaPage extends StatefulWidget {
   const RotaPage({super.key});
 
   @override
-  State<RotaPage> createState() => _RotaPageState(); 
+  State<RotaPage> createState() => _RotaPageState();
 }
 
-
 class _RotaPageState extends State<RotaPage> {
-String _suaPosicao = "";
+  String _suaPosicao = "";
   final _suaPosicaoController = TextEditingController();
 
   List<Ponto> rotasprevistas = []; // Inicialização da lista de rotas
   List<Ponto> rotasFiltradas = []; // Lista de rotas filtradas
   final _searchController = TextEditingController();
-  
 
-   @override
+  @override
   void initState() {
     super.initState();
 
@@ -69,7 +67,8 @@ String _suaPosicao = "";
       body: Column(
         children: <Widget>[
           _buildTopSection(), // Chama o método que constrói a parte superior
-          _buildBottomSection(context), // Chama o método que constrói a parte inferior
+          _buildBottomSection(
+              context), // Chama o método que constrói a parte inferior
         ],
       ),
     );
@@ -78,8 +77,8 @@ String _suaPosicao = "";
   // Método que constrói a parte superior da tela
   Widget _buildTopSection() {
     return Container(
-      color: const Color.fromARGB(129, 28, 199, 128), 
-      padding: const EdgeInsets.all(8.0), 
+      color: const Color.fromARGB(129, 28, 199, 128),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         children: <Widget>[
           _buildTextField(
@@ -98,17 +97,22 @@ String _suaPosicao = "";
                 context,
                 MaterialPageRoute(
                   builder: (context) => Mapa(
-                    pontosFiltrados: rotasFiltradas, rotasprevistas: const [], buscarPontoMaisProximo: false,
+                    pontosFiltrados: rotasFiltradas,
+                    rotasprevistas: const [],
+                    buscarPontoMaisProximo: false,
                   ),
                 ),
               );
             }, // Define a ação do botão (vazia por enquanto)
-            child: const Text('Buscar', style: TextStyle(color: Colors.blue)), // Define o texto e estilo do botão
+            child: const Text('Buscar',
+                style: TextStyle(
+                    color: Colors.blue)), // Define o texto e estilo do botão
           ),
         ],
       ),
     );
   }
+
   // Campo de texto com autocomplete para o "Destino Final"
   Widget _buildAutoCompleteTextField(
       String label, TextEditingController controller) {
@@ -156,9 +160,11 @@ String _suaPosicao = "";
       decoration: InputDecoration(
         border: const OutlineInputBorder(), // Define a borda do campo de texto
         labelText: label, // Define o rótulo do campo de texto
-        labelStyle: const TextStyle(color: Colors.white), // Define a cor do rótulo
+        labelStyle:
+            const TextStyle(color: Colors.white), // Define a cor do rótulo
         focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue), // Define a cor da borda quando focada
+          borderSide: BorderSide(
+              color: Colors.blue), // Define a cor da borda quando focada
         ),
       ),
     );
@@ -174,19 +180,32 @@ String _suaPosicao = "";
             children: <Widget>[
               const Text(
                 'PONTO MAIS PRÓXIMO',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, decoration: TextDecoration.underline,), // Define o estilo do texto
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                ), // Define o estilo do texto
               ),
               const SizedBox(height: 15), // Adiciona um espaçamento
               _buildElevatedButton('Azul', Colors.blue, () {
-                Navigator.pushNamed(context, "/rotasprevistas", arguments: {'cor':'azul', 'buscar_ponto_mais_proximo':true});
+                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                  'cor': '#0000FF',
+                  'buscar_ponto_mais_proximo': true
+                });
               }), // Chama o método que cria um botão
               const SizedBox(height: 15), // Adiciona um espaçamento
               _buildElevatedButton('Vermelho', Colors.red, () {
-                Navigator.pushNamed(context, "/rotasprevistas", arguments: {'cor':'vermelho', 'buscar_ponto_mais_proximo':true});
+                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                  'cor': '#FF0000',
+                  'buscar_ponto_mais_proximo': true
+                });
               }), // Chama o método que cria outro botão
               const SizedBox(height: 15), // Adiciona um espaçamento
               _buildElevatedButton('Verde', Colors.green, () {
-                Navigator.pushNamed(context, "/rotasprevistas", arguments: {'cor':'verde', 'buscar_ponto_mais_proximo':true});
+                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                  'cor': '#00FF00',
+                  'buscar_ponto_mais_proximo': true
+                });
               }),
             ],
           ),
@@ -196,14 +215,19 @@ String _suaPosicao = "";
   }
 
   // Método que cria um botão elevado com texto, cor e ação
-  Widget _buildElevatedButton(String text, Color color, VoidCallback onPressed) {
+  Widget _buildElevatedButton(
+      String text, Color color, VoidCallback onPressed) {
     return ElevatedButton(
-      onPressed: onPressed, 
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: color, // Define a cor de fundo do botão
-        minimumSize: const Size(double.infinity, 80), // Define o tamanho mínimo do botão
+        minimumSize:
+            const Size(double.infinity, 80), // Define o tamanho mínimo do botão
       ),
-      child: Text(text, style: const TextStyle(fontSize: 18, color: Colors.white)), // Define o texto e estilo do botão
+      child: Text(text,
+          style: const TextStyle(
+              fontSize: 18,
+              color: Colors.white)), // Define o texto e estilo do botão
     );
   }
 }

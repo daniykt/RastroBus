@@ -8,7 +8,7 @@ import 'package:rastrobus/vm/horario_vm.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
 class PrevissoesPage extends StatefulWidget {
-  const PrevissoesPage({Key? key}) : super(key: key);
+  const PrevissoesPage({super.key});
 
   @override
   State<PrevissoesPage> createState() => _PrevissoesPageState();
@@ -51,7 +51,7 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: _buildMapSection(rotasFiltradas), // Usando rotasFiltradas
+            child: _buildMapSection(rotasprevistas), // Usando rotasFiltradas
           ),
           _buildBottomSection(),
         ],
@@ -130,6 +130,7 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
   }
 
   // Método para construir o botão
+  // ignore: unused_element
   Widget _buildButton(String text) {
     return ElevatedButton(
       onPressed: () {},
