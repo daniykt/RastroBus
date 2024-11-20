@@ -35,12 +35,10 @@ class RotasPrevistasPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Expanded(
+          const Expanded(
             child: SizedBox(
               width: double.infinity,
-              child: Mapa(
-                buscarPontoMaisProximo: buscarPontoMaisProximo,
-              ),
+              child: Mapa(),
             ),
           ),
           Container(

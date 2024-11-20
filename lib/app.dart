@@ -5,6 +5,7 @@ import 'package:rastrobus/pages/linhas_page.dart';
 import 'package:rastrobus/pages/previssoes_page.dart';
 import 'package:rastrobus/pages/rota_page.dart';
 import 'package:rastrobus/pages/rotaprevistas_page.dart';
+import 'package:rastrobus/pages/route_page.dart';
 
 class Aplicacao extends StatelessWidget {
   const Aplicacao({super.key});
@@ -22,6 +23,7 @@ class Aplicacao extends StatelessWidget {
         "/rotapage": (_) => const RotaPage(),
         "/rotasprevistas": (_) => const RotasPrevistasPage(),
         "/detalheponto": (_) => const DetalhePonto(),
+        "/route": (_) => const RoutePage(),
       },
     );
   }

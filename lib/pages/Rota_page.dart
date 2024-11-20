@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:rastrobus/componentes/mapa.dart';
 import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/util/addresses.dart';
 import 'package:rastrobus/util/location.dart';
+import 'package:rastrobus/util/route_query.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
 class RotaPage extends StatefulWidget {
@@ -23,6 +25,9 @@ class _RotaPageState extends State<RotaPage> {
   List<Ponto> rotasprevistas = []; // Inicialização da lista de rotas
   List<Ponto> rotasFiltradas = []; // Lista de rotas filtradas
   final _searchController = TextEditingController();
+  
+  late Position _userPosition;
+  late Ponto _targetPosition;
 
   @override
   void initState() {
@@ -43,6 +48,7 @@ class _RotaPageState extends State<RotaPage> {
       setState(() {
         _suaPosicao = addressText;
         _suaPosicaoController.text = addressText;
+        _userPosition = position;
       });
     });
 
@@ -101,13 +107,10 @@ class _RotaPageState extends State<RotaPage> {
           const SizedBox(height: 8), // Adiciona um espaçamento
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
+              Navigator.pushNamed(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const Mapa(
-                    buscarPontoMaisProximo: false,
-                  ),
-                ),
+                "/route",
+                arguments: RouteQuery(_userPosition, _targetPosition),
               );
             }, // Define a ação do botão (vazia por enquanto)
             child: const Text('Buscar',
@@ -150,6 +153,10 @@ class _RotaPageState extends State<RotaPage> {
               return ListTile(
                 title: Text(rota.endereco),
                 onTap: () {
+                  setState(() {
+                    _targetPosition = rota;
+                  });
+
                   _searchController.text = rota.endereco;
                   FocusScope.of(context).unfocus();
                 },

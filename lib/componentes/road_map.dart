@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
 import 'package:rastrobus/entidade/ponto.dart';
-import 'dart:math';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
-class Mapa extends StatefulWidget {
-  const Mapa({
+class RoadMap extends StatefulWidget {
+  final Ponto target;
+  final GeoPoint userPoint;
+
+  const RoadMap({
     super.key,
-    this.mostraApenasFiltrados = true,
+    required this.target,
+    required this.userPoint,
   });
 
-  final bool mostraApenasFiltrados;
-
   @override
-  State<Mapa> createState() => _MapaState();
+  State<RoadMap> createState() => _RoadMapState();
 }
 
-class _MapaState extends State<Mapa> with OSMMixinObserver {
+class _RoadMapState extends State<RoadMap> with OSMMixinObserver {
   late MapController controller;
 
-  List<Ponto> pontosExibicao = [];
-  Map<String, List<GeoPoint>> pontosExibidosPorCor = {};
+  Map<String, List<GeoPoint>> pontosExibidosPorTag = {};
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _MapaState extends State<Mapa> with OSMMixinObserver {
 
     controller = MapController(
       initMapWithUserPosition: const UserTrackingOption(
-        enableTracking: true,
+        enableTracking: false,
         unFollowUser: false,
       ),
     );
@@ -42,6 +42,19 @@ class _MapaState extends State<Mapa> with OSMMixinObserver {
     controller.dispose();
 
     super.dispose();
+  }
+
+  Color _getColor(String colorHex) {
+    switch (colorHex.toUpperCase()) {
+      case '#FF0000':
+        return Colors.red;
+      case '#00FF00':
+        return Colors.green;
+      case '#0000FF':
+        return Colors.blue;
+      default:
+        return Colors.black;
+    }
   }
 
   String _getColorName(String colorHex) {
@@ -58,40 +71,59 @@ class _MapaState extends State<Mapa> with OSMMixinObserver {
   }
 
   Future<void> _updateMapWithMarkers() async {
-    pontosExibidosPorCor.forEach((cor, pontos) async {
+    pontosExibidosPorTag.forEach((cor, pontos) async {
       for (var ponto in pontos) {
         await controller.removeMarker(ponto);
       }
     });
 
-    final vm = Provider.of<RotasPrevistasVIewModel>(context, listen: false);
-    List<Ponto> pontos = widget.mostraApenasFiltrados ? vm.rotasExibicao : vm.rotasprevistas;
+    Map<String, List<GeoPoint>> pontosPorTag = {};
 
-    Map<String, List<GeoPoint>> pontosPorCor = {};
+    _addTargetPoint(pontosPorTag);
+    _addUserPoint(pontosPorTag);
 
-    for (var ponto in pontos) {
-      var cor = _getColorName(ponto.cor);
-
-      pontosPorCor.putIfAbsent(cor, () => []);
-      pontosPorCor[cor]!.add(
-        GeoPoint(
-          latitude: ponto.latitude,
-          longitude: ponto.longitude,
-        ),
-      );
-    }
-    
-    pontosPorCor.forEach((cor, pontos) async {
+    pontosPorTag.forEach((cor, pontos) async {
       await controller.setStaticPosition(pontos, cor);
     });
+
+    controller.drawRoad(
+      widget.userPoint,
+      GeoPoint(
+        latitude: widget.target.latitude,
+        longitude: widget.target.longitude,
+      ),
+      roadOption: RoadOption(
+        roadColor: _getColor(widget.target.cor),
+      ),
+    );
 
     if (mounted) {
       //força reload na tela
       setState(() {
-        pontosExibidosPorCor = pontosPorCor;
-        pontosExibicao = pontos;
+        pontosExibidosPorTag = pontosPorTag;
       });
     }
+  }
+
+  void _addUserPoint(Map<String, List<GeoPoint>> map) {
+    final user = widget.userPoint;
+
+    map.putIfAbsent("usuario", () => []);
+    map["usuario"]!.add(user);
+  }
+
+  void _addTargetPoint(Map<String, List<GeoPoint>> map) {
+    final ponto = widget.target;
+
+    var cor = _getColorName(ponto.cor);
+
+    map.putIfAbsent(cor, () => []);
+    map[cor]!.add(
+      GeoPoint(
+        latitude: ponto.latitude,
+        longitude: ponto.longitude,
+      ),
+    );
   }
 
   @override
@@ -111,12 +143,6 @@ class _MapaState extends State<Mapa> with OSMMixinObserver {
           ],
         ),
       ),
-      onGeoPointClicked: (point) {
-        final ponto = findByGeoPoint(pontosExibicao, point);
-        if (ponto != null) {
-          Navigator.pushNamed(context, "/detalheponto", arguments: ponto.id);
-        }
-      },
       osmOption: OSMOption(
         zoomOption: const ZoomOption(
           initZoom: 17,
@@ -158,73 +184,20 @@ class _MapaState extends State<Mapa> with OSMMixinObserver {
             ),
             [],
           ),
+          StaticPositionGeoPoint(
+            "usuario",
+            const MarkerIcon(
+              icon: Icon(
+                Icons.person_pin,
+                color: Colors.blue,
+                size: 32,
+              ),
+            ),
+            [],
+          ),
         ],
-        userLocationMarker: UserLocationMaker(
-          personMarker: const MarkerIcon(
-            icon: Icon(
-              Icons.person_pin,
-              color: Colors.blue,
-              size: 32,
-            ),
-          ),
-          directionArrowMarker: const MarkerIcon(
-            icon: Icon(
-              Icons.double_arrow,
-              size: 32,
-            ),
-          ),
-        ),
       ),
     );
-  }
-
-  Ponto? findByGeoPoint(List<Ponto> pontos, GeoPoint geoPoint) {
-    return pontos
-        .where((p) =>
-            p.latitude == geoPoint.latitude &&
-            p.longitude == geoPoint.longitude)
-        .firstOrNull;
-  }
-
-  Ponto findNearestPonto(
-      double latitude, double longitude, List<Ponto> pontos) {
-    Ponto? nearestPonto;
-    double shortestDistance = double.infinity;
-
-    for (Ponto ponto in pontos) {
-      double distance = calculateDistance(
-        latitude,
-        longitude,
-        ponto.latitude,
-        ponto.longitude,
-      );
-
-      if (distance < shortestDistance) {
-        shortestDistance = distance;
-        nearestPonto = ponto;
-      }
-    }
-
-    return nearestPonto!;
-  }
-
-  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-    const double R = 6371; // Raio da Terra em km
-    double dLat = _degToRad(lat2 - lat1);
-    double dLon = _degToRad(lon2 - lon1);
-
-    double a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_degToRad(lat1)) *
-            cos(_degToRad(lat2)) *
-            sin(dLon / 2) *
-            sin(dLon / 2);
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
-    return R * c; // Distância em km
-  }
-
-  double _degToRad(double deg) {
-    return deg * (pi / 180);
   }
 
   @override

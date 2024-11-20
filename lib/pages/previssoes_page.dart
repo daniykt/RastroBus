@@ -122,7 +122,6 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
     return const SizedBox(
       width: double.infinity,
       child: Mapa(
-        buscarPontoMaisProximo: false, // Adição dos pontos filtrados ao mapa
         mostraApenasFiltrados: false,
       ),
     );
