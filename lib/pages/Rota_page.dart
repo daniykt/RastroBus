@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/util/addresses.dart';
 import 'package:rastrobus/util/location.dart';
+import 'package:rastrobus/util/ponto_mais_proximo.dart';
 import 'package:rastrobus/util/route_query.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
@@ -21,7 +22,7 @@ class _RotaPageState extends State<RotaPage> {
   List<Ponto> rotasprevistas = []; // Inicialização da lista de rotas
   List<Ponto> rotasFiltradas = []; // Lista de rotas filtradas
   final _searchController = TextEditingController();
-  
+
   late Position _userPosition;
   late Ponto _targetPosition;
 
@@ -196,26 +197,23 @@ class _RotaPageState extends State<RotaPage> {
                 ), // Define o estilo do texto
               ),
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Azul', Colors.blue, () {
-                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
-                  'cor': '#0000FF',
-                  'buscar_ponto_mais_proximo': true
-                });
-              }), // Chama o método que cria um botão
+              _buildElevatedButton(
+                'Azul',
+                Colors.blue,
+                () => findPontoMaisProximo(context, _userPosition, "#0000FF"),
+              ), // Chama o método que cria um botão
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Vermelho', Colors.red, () {
-                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
-                  'cor': '#FF0000',
-                  'buscar_ponto_mais_proximo': true
-                });
-              }), // Chama o método que cria outro botão
+              _buildElevatedButton(
+                'Vermelho',
+                Colors.red,
+                () => findPontoMaisProximo(context, _userPosition, "#FF0000"),
+              ), // Chama o método que cria outro botão
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Verde', Colors.green, () {
-                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
-                  'cor': '#00FF00',
-                  'buscar_ponto_mais_proximo': true
-                });
-              }),
+              _buildElevatedButton(
+                'Verde',
+                Colors.green,
+                () => findPontoMaisProximo(context, _userPosition, "#00FF00"),
+              ),
             ],
           ),
         ),
@@ -225,7 +223,10 @@ class _RotaPageState extends State<RotaPage> {
 
   // Método que cria um botão elevado com texto, cor e ação
   Widget _buildElevatedButton(
-      String text, Color color, VoidCallback onPressed) {
+    String text,
+    Color color,
+    VoidCallback onPressed,
+  ) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(

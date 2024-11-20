@@ -129,6 +129,9 @@ class _RoadMapState extends State<RoadMap> with OSMMixinObserver {
     return OSMFlutter(
       controller: controller, // Controlador do mapa
       key: const Key("mapa"),
+      onGeoPointClicked: (point) {
+        Navigator.pushNamed(context, "/detalheponto", arguments: widget.target.id);
+      },
       mapIsLoading: const Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
