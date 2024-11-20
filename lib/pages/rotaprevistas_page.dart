@@ -17,7 +17,6 @@ class RotasPrevistasPage extends StatelessWidget {
     // Obtendo os parâmetros passados via navegação (se houver)
     final arguments =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    final selectedColor = arguments?['cor'];
     final buscarPontoMaisProximo =
         arguments?['buscar_ponto_mais_proximo'] ?? false;
 
@@ -25,22 +24,6 @@ class RotasPrevistasPage extends StatelessWidget {
     final vm = Provider.of<RotasPrevistasVIewModel>(context);
     final vmHorario = Provider.of<HorarioViewModel>(context);
     final horario = vmHorario.horario;
-
-    // Filtrando as rotas conforme a cor selecionada
-    // List<Ponto> rotasprevistas = [];
-    // switch (selectedColor) {
-    //   case '#0000FF':
-    //     rotasprevistas = vm.rotasAzuis();
-    //     break;
-    //   case '#00FF00':
-    //     rotasprevistas = vm.rotasVerdes();
-    //     break;
-    //   case '#FF0000':
-    //     rotasprevistas = vm.rotasVermelhas();
-    //     break;
-    //   default:
-    //     rotasprevistas = vm.rotasprevistas;
-    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -56,9 +39,7 @@ class RotasPrevistasPage extends StatelessWidget {
             child: SizedBox(
               width: double.infinity,
               child: Mapa(
-                rotasprevistas: vm.rotasExibicao,
                 buscarPontoMaisProximo: buscarPontoMaisProximo,
-                keepAlive: false,
               ),
             ),
           ),

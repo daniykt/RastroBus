@@ -119,11 +119,11 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
 
   // Método que constrói o mapa
   Widget _buildMapSection(List<Ponto> pontosFiltrados) {
-    return SizedBox(
+    return const SizedBox(
       width: double.infinity,
       child: Mapa(
-        rotasprevistas: pontosFiltrados,
         buscarPontoMaisProximo: false, // Adição dos pontos filtrados ao mapa
+        mostraApenasFiltrados: false,
       ),
     );
   }

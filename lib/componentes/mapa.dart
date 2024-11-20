@@ -5,27 +5,24 @@ import 'package:rastrobus/entidade/ponto.dart';
 import 'dart:math';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
-// ignore: must_be_immutable
 class Mapa extends StatefulWidget {
   const Mapa({
     super.key,
-    required this.rotasprevistas,
     required this.buscarPontoMaisProximo,
-    this.keepAlive = true,
+    this.mostraApenasFiltrados = true,
   });
 
-  final List<Ponto> rotasprevistas;
   final bool buscarPontoMaisProximo;
-  final bool keepAlive;
+  final bool mostraApenasFiltrados;
 
   @override
   State<Mapa> createState() => _MapaState();
 }
 
-class _MapaState extends State<Mapa>
-    with OSMMixinObserver, AutomaticKeepAliveClientMixin {
+class _MapaState extends State<Mapa> with OSMMixinObserver {
   late MapController controller;
 
+  List<Ponto> pontosExibicao = [];
   Map<String, List<GeoPoint>> pontosExibidosPorCor = {};
 
   @override
@@ -64,14 +61,13 @@ class _MapaState extends State<Mapa>
 
   Future<void> _updateMapWithMarkers() async {
     pontosExibidosPorCor.forEach((cor, pontos) async {
-      print("vai remover ${pontos.length} da cor $cor");
       for (var ponto in pontos) {
         await controller.removeMarker(ponto);
       }
     });
 
     final vm = Provider.of<RotasPrevistasVIewModel>(context, listen: false);
-    List<Ponto> pontos = vm.rotasExibicao;
+    List<Ponto> pontos = widget.mostraApenasFiltrados ? vm.rotasExibicao : vm.rotasprevistas;
 
     Map<String, List<GeoPoint>> pontosPorCor = {};
 
@@ -86,11 +82,8 @@ class _MapaState extends State<Mapa>
         ),
       );
     }
-
-    print("pontosPorCor.entries: ${pontosPorCor.entries.length}");
-
+    
     pontosPorCor.forEach((cor, pontos) async {
-      print("vai adicionar ${pontos.length} da cor $cor");
       await controller.setStaticPosition(pontos, cor);
     });
 
@@ -98,6 +91,7 @@ class _MapaState extends State<Mapa>
       //força reload na tela
       setState(() {
         pontosExibidosPorCor = pontosPorCor;
+        pontosExibicao = pontos;
       });
     }
   }
@@ -120,7 +114,7 @@ class _MapaState extends State<Mapa>
         ),
       ),
       onGeoPointClicked: (point) {
-        final ponto = findByGeoPoint(widget.rotasprevistas, point);
+        final ponto = findByGeoPoint(pontosExibicao, point);
         if (ponto != null) {
           Navigator.pushNamed(context, "/detalheponto", arguments: ponto.id);
         }
@@ -234,9 +228,6 @@ class _MapaState extends State<Mapa>
   double _degToRad(double deg) {
     return deg * (pi / 180);
   }
-
-  @override
-  bool get wantKeepAlive => false;
 
   @override
   Future<void> mapIsReady(bool isReady) async {
