@@ -1,14 +1,10 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:rastrobus/componentes/mapa.dart';
-import 'package:rastrobus/componentes/rotasprevistas_item.dart';
 import 'package:rastrobus/entidade/ponto.dart';
-import 'package:rastrobus/pages/previssoes_page.dart';
 import 'package:rastrobus/util/addresses.dart';
 import 'package:rastrobus/util/location.dart';
-import 'package:rastrobus/vm/horario_vm.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
 class RotaPage extends StatefulWidget {
@@ -23,27 +19,27 @@ class _RotaPageState extends State<RotaPage> {
   final _suaPosicaoController = TextEditingController();
 
   List<Ponto> rotasprevistas = []; // Inicialização da lista de rotas
-  List<Ponto> rotasFiltradas = [];
+  List<Ponto> rotasFiltradas = []; // Lista de rotas filtradas
   final _searchController = TextEditingController();
 
   @override
   void initState() {
+    super.initState();
+
+    // Definir a posição inicial do usuário (caso esteja usando localização)
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       final position = await determinePosition();
       final address = await getAddressWithLatLng(position);
 
       setState(() {
-        _suaPosicao =
-            /*"(${position.latitude},${position.longitude}) - */
-            "${address?.road}";
-
+        _suaPosicao = "${address?.road}";
         _suaPosicaoController.text = _suaPosicao;
       });
     });
 
+    // Filtro das rotas conforme a digitação do usuário
     void filtraRotas() {
       final query = _searchController.text.toLowerCase();
-
       setState(() {
         rotasFiltradas = rotasprevistas
             .where((rota) => rota.endereco.toLowerCase().contains(query))
@@ -53,6 +49,7 @@ class _RotaPageState extends State<RotaPage> {
 
     _searchController.addListener(filtraRotas);
 
+    // Carregar rotas ao inicializar
     SchedulerBinding.instance.addPostFrameCallback((_) {
       final vm = Provider.of<RotasPrevistasVIewModel>(context, listen: false);
       vm.loadPontos().then((pontos) {
@@ -62,8 +59,6 @@ class _RotaPageState extends State<RotaPage> {
         });
       });
     });
-
-    super.initState();
   }
 
   @override
@@ -72,11 +67,8 @@ class _RotaPageState extends State<RotaPage> {
       body: Column(
         children: <Widget>[
           _buildTopSection(), // Chama o método que constrói a parte superior
-          _buildListItem(
-              context), // Chama o método que constrói a parte da lista
-          _buildBottomSection(
-            context,
-          ), // Chama o método que constrói a parte inferior
+          _buildListItem(context), // Chama o método que constrói a parte da lista
+          _buildBottomSection(context), // Chama o método que constrói a parte inferior
         ],
       ),
     );
@@ -92,12 +84,12 @@ class _RotaPageState extends State<RotaPage> {
           _buildTextField(
             'Sua Posição',
             _suaPosicaoController,
-          ), // Chama o método que cria um campo de texto
+          ),
           const SizedBox(height: 8), // Adiciona um espaçamento
-          _buildTextField(
+          _buildAutoCompleteTextField(
             'Destino Final',
             _searchController,
-          ), // Chama o método que cria outro campo de texto
+          ),
           const SizedBox(height: 8), // Adiciona um espaçamento
           ElevatedButton(
             onPressed: () {
@@ -105,38 +97,74 @@ class _RotaPageState extends State<RotaPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => Mapa(
-                    pontosFiltrados:
-                        rotasFiltradas, // Passando os pontos filtrados para a nova página
+                    pontosFiltrados: rotasFiltradas,
+                    rotasprevistas: const [],
+                    buscarPontoMaisProximo: false,
                   ),
                 ),
               );
-            },
-            child: const Text(
-              'Buscar',
-              style: TextStyle(
-                color: Colors.blue,
-              ),
-            ), // Define o texto e estilo do botão
+            }, // Define a ação do botão (vazia por enquanto)
+            child: const Text('Buscar',
+                style: TextStyle(
+                    color: Colors.blue)), // Define o texto e estilo do botão
           ),
         ],
       ),
     );
   }
 
+  // Campo de texto com autocomplete para o "Destino Final"
+  Widget _buildAutoCompleteTextField(
+      String label, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: label,
+            border: const OutlineInputBorder(),
+          ),
+          onChanged: (query) {
+            setState(() {
+              rotasFiltradas = rotasprevistas
+                  .where((rota) =>
+                      rota.endereco.toLowerCase().contains(query.toLowerCase()))
+                  .toList();
+            });
+          },
+        ),
+        // Lista suspensa de sugestões com base no filtro
+        if (_searchController.text.isNotEmpty)
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: rotasFiltradas.length,
+            itemBuilder: (context, index) {
+              final rota = rotasFiltradas[index];
+              return ListTile(
+                title: Text(rota.endereco),
+                onTap: () {
+                  _searchController.text = rota.endereco;
+                  FocusScope.of(context).unfocus();
+                },
+              );
+            },
+          ),
+      ],
+    );
+  }
+
   // Método que cria um campo de texto com um rótulo
-  Widget _buildTextField(String label, TextEditingController? controller) {
+  Widget _buildTextField(String label, TextEditingController controller) {
     return TextField(
-      controller: controller,
       decoration: InputDecoration(
         border: const OutlineInputBorder(), // Define a borda do campo de texto
         labelText: label, // Define o rótulo do campo de texto
-        labelStyle: const TextStyle(
-          color: Colors.white,
-        ), // Define a cor do rótulo
+        labelStyle:
+            const TextStyle(color: Colors.white), // Define a cor do rótulo
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.blue,
-          ), // Define a cor da borda quando focada
+              color: Colors.blue), // Define a cor da borda quando focada
         ),
       ),
     );
@@ -159,15 +187,25 @@ class _RotaPageState extends State<RotaPage> {
                 ), // Define o estilo do texto
               ),
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Azul', Colors.blue,
-                  () {}), // Chama o método que cria um botão
+              _buildElevatedButton('Azul', Colors.blue, () {
+                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                  'cor': '#0000FF',
+                  'buscar_ponto_mais_proximo': true
+                });
+              }), // Chama o método que cria um botão
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Vermelho', Colors.red,
-                  () {}), // Chama o método que cria outro botão
+              _buildElevatedButton('Vermelho', Colors.red, () {
+                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                  'cor': '#FF0000',
+                  'buscar_ponto_mais_proximo': true
+                });
+              }), // Chama o método que cria outro botão
               const SizedBox(height: 15), // Adiciona um espaçamento
               _buildElevatedButton('Verde', Colors.green, () {
-                Navigator.pushNamed(context,
-                    "/rotasprevistas"); // Define a navegação para outra rota
+                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                  'cor': '#00FF00',
+                  'buscar_ponto_mais_proximo': true
+                });
               }),
             ],
           ),

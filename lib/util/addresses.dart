@@ -9,7 +9,7 @@ Future<Address?> getAddressWithLatLng(Position position) async {
   );
 
   if (geoLatLang != null) {
-    return geoLatLang.address!;
+    return geoLatLang.address; // Corrigido para retornar o endereço diretamente
   }
 
   return null;

@@ -10,59 +10,55 @@ class DetalhePonto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-
+    // Argumento passado na navegação (id do ponto)
     final argument = ModalRoute.of(context)?.settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Previssões",
+          "Previsões",
           style: textTheme.titleLarge?.copyWith(color: const Color(0xFFF0F0F0)),
         ),
-        backgroundColor: const Color(0xFF004445),
+        backgroundColor: const Color(0xFF004445), // Cor do AppBar
       ),
-      body: argument == null
-          ? emptyBody(context)
-          : body(context, argument as int),
+      body: argument == null ? _emptyBody(context) : _body(context, argument as int),
     );
   }
 
-  Widget emptyBody(BuildContext context) => Center(
+  // Corpo vazio caso não haja argumento (ponto não selecionado)
+  Widget _emptyBody(BuildContext context) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Não foi informado nenhum id de ponto"),
-            const SizedBox(
-              height: 12,
-            ),
+            const Text("Nenhum ponto de ônibus selecionado."),
+            const SizedBox(height: 12,),
             ElevatedButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(context), // Voltar à tela anterior
               child: const Text("Voltar"),
             ),
           ],
         ),
       );
 
-  Widget body(BuildContext context, int id) {
+  // Corpo principal que carrega as informações do ponto
+  Widget _body(BuildContext context, int id) {
     final vm = Provider.of<RotasPrevistasVIewModel>(context, listen: false);
 
     return FutureBuilder<Ponto>(
-      future: vm.loadPontoById(id),
+      future: vm.loadPontoById(id), // Carregar o ponto pelo id
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return onError(context);
+          return _onError(context); // Exibe erro se houver falha
         }
-
         if (snapshot.hasData) {
-          return onSuccess(context, snapshot.data!);
+          return _onSuccess(context, snapshot.data!, vm); // Exibe os dados carregados
         }
-
-        return onLoading();
+        return _onLoading(); // Exibe loading enquanto os dados são carregados
       },
     );
   }
 
-  Widget onLoading() => const Center(
+  Widget _onLoading() => const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -75,12 +71,12 @@ class DetalhePonto extends StatelessWidget {
         ),
       );
 
-  Widget onError(BuildContext context) => Center(
+  Widget _onError(BuildContext context) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-                "Não foi possível carregar as informações do ponto. Volte e tente novamente."),
+                "Não foi possível carregar as informações do ponto. Volte e tente novamente.",),
             const SizedBox(
               height: 12,
             ),
@@ -92,19 +88,123 @@ class DetalhePonto extends StatelessWidget {
         ),
       );
 
-  Widget onSuccess(BuildContext context, Ponto ponto) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          getImage(ponto),
-          Text(ponto.endereco),
-        ],
-      ),
+  // Exibe as informações do ponto de ônibus
+  Widget _onSuccess(BuildContext context, Ponto ponto, RotasPrevistasVIewModel vm) {
+    return FutureBuilder<String?>(
+      future: vm.loadHorarioChegadaByPontoId(ponto.id), // Carregar o horário de chegada
+      builder: (context, horarioSnapshot) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Exibe a rua e bairro do ponto
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFb3cde0),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Rua e Referência",
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal.shade700,
+                            ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        ponto.endereco, // Endereço do ponto
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontStyle: FontStyle.italic,
+                              color: const Color(0xFF333333),
+                            ),
+                      ),
+                      Text(
+                        ponto.bairro, // Bairro do ponto
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: const Color(0xFF666666),
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Exibe imagem do ponto ou uma imagem padrão
+                _getImage(ponto),
+                const SizedBox(height: 8),
+
+                // Exibe nome do bairro
+                Text(
+                  ponto.bairro,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                ),
+                const SizedBox(height: 8),
+
+                // Exibe a cor da linha do ônibus
+                Container(
+                  width: 300,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: Color(int.parse(ponto.cor.replaceFirst('#', ''), radix: 16) | 0xFF000000),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Exibe o horário de chegada ou "Indisponível"
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFb3cde0),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Horário de chegada:",
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        horarioSnapshot.data ?? "Indisponível", // Exibe o horário
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget getImage(Ponto ponto) => ponto.imagem == null
-      ? Image.asset("lib/assets/images/sem_imagem.png")
-      : Image.memory(base64Decode(ponto.imagem!));
+  // Função que retorna a imagem do ponto, ou uma imagem padrão
+  Widget _getImage(Ponto ponto) => ponto.imagem == null
+      ? Image.asset("lib/assets/images/sem_imagem.png") // Imagem padrão
+      : ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: Image.memory(
+            base64Decode(ponto.imagem!), // Decodifica a imagem base64
+            fit: BoxFit.cover,
+          ),
+        );
 }

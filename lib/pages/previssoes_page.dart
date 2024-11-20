@@ -8,19 +8,15 @@ import 'package:rastrobus/vm/horario_vm.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
 class PrevissoesPage extends StatefulWidget {
-  const PrevissoesPage({
-    Key? key,
-  }) : super(key: key);
+  const PrevissoesPage({super.key});
 
   @override
   State<PrevissoesPage> createState() => _PrevissoesPageState();
 }
 
 class _PrevissoesPageState extends State<PrevissoesPage> {
-  List<Ponto> rotasprevistas = []; // Inicialização da lista de rotas
-
+  List<Ponto> rotasprevistas = [];
   List<Ponto> rotasFiltradas = [];
-
   final _searchController = TextEditingController();
 
   @override
@@ -43,17 +39,19 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
   @override
   void dispose() {
     _searchController.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<RotasPrevistasVIewModel>(context);
+    rotasprevistas = vm.rotasprevistas;
+
     return Scaffold(
       body: Column(
         children: <Widget>[
           Expanded(
-            child: _buildMapSection(), // Mapa ocupando a parte superior da tela
+            child: _buildMapSection(rotasprevistas), // Usando rotasFiltradas
           ),
           _buildBottomSection(),
         ],
@@ -61,11 +59,10 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
     );
   }
 
-// Método que constrói a parte inferior da tela
+  // Método que constrói a parte inferior da tela
   Widget _buildBottomSection() {
     final screenSize = MediaQuery.of(context).size;
     final listHeight = screenSize.height * 0.25;
-
     final vmHorario = Provider.of<HorarioViewModel>(context);
     final horario = vmHorario.horario;
 
@@ -108,6 +105,9 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
                 child: RotasprevistasItem(
                   rotasprevistas: rotasFiltradas[index],
                   horario: horario[index],
+                  cor: Color(int.parse(rotasFiltradas[index].cor.substring(1),
+                          radix: 16) +
+                      0xFF000000), // Conversão de cor hex para objeto Color
                 ),
               ),
             ),
@@ -118,16 +118,19 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
   }
 
   // Método que constrói o mapa
-  Widget _buildMapSection() {
-    return const SizedBox(
+  Widget _buildMapSection(List<Ponto> pontosFiltrados) {
+    return SizedBox(
       width: double.infinity,
       child: Mapa(
-        pontosFiltrados: [],
-      ), // Certifique-se de que seu widget Mapa esteja definido corretamente
+        rotasprevistas: pontosFiltrados,
+        buscarPontoMaisProximo: false,
+        pontosFiltrados: pontosFiltrados, // Adição dos pontos filtrados ao mapa
+      ),
     );
   }
 
-  // Método que constrói um botão na parte inferior (se necessário)
+  // Método para construir o botão
+  // ignore: unused_element
   Widget _buildButton(String text) {
     return ElevatedButton(
       onPressed: () {},

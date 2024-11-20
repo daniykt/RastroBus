@@ -5,11 +5,13 @@ import 'package:rastrobus/entidade/ponto.dart';
 class RotasprevistasItem extends StatelessWidget {
   final Ponto rotasprevistas;
   final Horario horario;
+  final Color cor;
 
   const RotasprevistasItem({
     super.key,
     required this.rotasprevistas,
     required this.horario,
+    required this.cor,
   });
 
   @override
@@ -27,7 +29,7 @@ class RotasprevistasItem extends StatelessWidget {
                 child: Row(
                   children: [
                     CircleAvatar(
-                      backgroundColor: const Color(0xFF004E0A),
+                      backgroundColor: cor,
                       child: Text(
                         "${rotasprevistas.numero}",
                         style: textTheme.bodyLarge
