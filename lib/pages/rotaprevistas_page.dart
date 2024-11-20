@@ -14,12 +14,6 @@ class RotasPrevistasPage extends StatelessWidget {
     final screenSize = MediaQuery.of(context).size;
     final listHeight = screenSize.height * 0.25;
 
-    // Obtendo os parâmetros passados via navegação (se houver)
-    final arguments =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    final buscarPontoMaisProximo =
-        arguments?['buscar_ponto_mais_proximo'] ?? false;
-
     // ViewModels para obter as rotas previstas e horários
     final vm = Provider.of<RotasPrevistasVIewModel>(context);
     final vmHorario = Provider.of<HorarioViewModel>(context);

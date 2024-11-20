@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import 'package:rastrobus/componentes/mapa.dart';
 import 'package:rastrobus/componentes/road_map.dart';
 import 'package:rastrobus/util/route_query.dart';
 

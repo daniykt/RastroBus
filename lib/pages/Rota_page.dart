@@ -1,10 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:rastrobus/componentes/mapa.dart';
 import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/util/addresses.dart';
 import 'package:rastrobus/util/location.dart';
@@ -19,7 +16,6 @@ class RotaPage extends StatefulWidget {
 }
 
 class _RotaPageState extends State<RotaPage> {
-  String _suaPosicao = "";
   final _suaPosicaoController = TextEditingController();
 
   List<Ponto> rotasprevistas = []; // Inicialização da lista de rotas
@@ -46,7 +42,6 @@ class _RotaPageState extends State<RotaPage> {
       }
 
       setState(() {
-        _suaPosicao = addressText;
         _suaPosicaoController.text = addressText;
         _userPosition = position;
       });
