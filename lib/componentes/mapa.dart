@@ -61,16 +61,17 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
     super.build(context);
     final tema = Theme.of(context);
 
-    final points =
-        <StaticPositionGeoPoint>[]; // Lista de pontos a serem exibidos no mapa
+    // Lista de pontos a serem exibidos no mapa
+    final points = <StaticPositionGeoPoint>[];
     final selecionados = <Ponto>[];
 
     if (widget.buscarPontoMaisProximo) {
       Ponto ponto = findNearestPonto(
-          -48.3688448,
-          -21.6006656,
-          widget
-              .rotasprevistas); // Pega a localização atual ao invés de uma fixa
+        -48.3688448,
+        -21.6006656,
+        widget.rotasprevistas,
+      );
+      // Pega a localização atual ao invés de uma fixa
       Color iconColor =
           _getColorFromEnum(ponto.cor); // Definindo a cor do marcador
 
@@ -81,7 +82,7 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
             icon: Icon(
               Icons.location_pin,
               color: iconColor,
-              size: 40,
+              size: 32,
             ),
           ),
           [GeoPoint(latitude: ponto.latitude, longitude: ponto.longitude)],
@@ -89,31 +90,16 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
       );
     } else {
       for (var ponto in widget.rotasprevistas) {
-        Color iconColor =
-            _getColorFromEnum(ponto.cor); // Definindo a cor do marcador
         points.add(
-          StaticPositionGeoPoint(
-            ponto.id.toString(),
-            MarkerIcon(
-              icon: Icon(
-                Icons.location_pin,
-                color: iconColor,
-                size: 40,
-              ),
-            ),
-            [GeoPoint(latitude: ponto.latitude, longitude: ponto.longitude)],
-          ),
+          buildMarker(ponto, selecionados),
         );
       }
-
-      points.addAll(pontosFiltrados.map((ponto) => buildMarker(
-          pontosFiltrados.indexOf(ponto), pontosFiltrados, selecionados)));
     }
 
     return OSMFlutter(
       controller: controller, // Controlador do mapa
       onGeoPointClicked: (point) {
-        final ponto = findByGeoPoint(pontosFiltrados, point);
+        final ponto = findByGeoPoint(widget.rotasprevistas, point);
         if (ponto != null) {
           Navigator.pushNamed(context, "/detalheponto", arguments: ponto.id);
         }
@@ -145,12 +131,7 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  StaticPositionGeoPoint buildMarker(
-    int index,
-    List<Ponto> pontos,
-    List<Ponto> selecionados,
-  ) {
-    final ponto = pontos[index];
+  StaticPositionGeoPoint buildMarker(Ponto ponto, List<Ponto> selecionados) {
     final selected = selecionados.indexWhere((p) => p.id == ponto.id) >= 0;
 
     return StaticPositionGeoPoint(
@@ -159,7 +140,7 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
         icon: Icon(
           Icons.location_pin,
           size: 32,
-          color: selected ? Colors.cyan : HexColor.fromHex(ponto.cor),
+          color: selected ? Colors.cyan : _getColorFromEnum(ponto.cor),
         ),
       ),
       [
