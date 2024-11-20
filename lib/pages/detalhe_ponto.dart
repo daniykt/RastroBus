@@ -165,7 +165,7 @@ class DetalhePonto extends StatelessWidget {
                   height: 16,
                   decoration: BoxDecoration(
                     color: Color(
-                        int.parse(ponto.cor.replaceFirst('#', ''), radix: 16) |
+                      int.parse(ponto.cor.replaceFirst('#', ''), radix: 16) |
                             0xFF000000),
                     borderRadius: BorderRadius.circular(8),
                   ),

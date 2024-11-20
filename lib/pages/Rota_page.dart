@@ -1,13 +1,12 @@
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:rastrobus/componentes/mapa.dart';
-import 'package:rastrobus/componentes/rotasprevistas_item.dart';
 import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/util/addresses.dart';
 import 'package:rastrobus/util/location.dart';
-import 'package:rastrobus/vm/horario_vm.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
 class RotaPage extends StatefulWidget {
@@ -34,9 +33,18 @@ class _RotaPageState extends State<RotaPage> {
       final position = await determinePosition();
       final address = await getAddressWithLatLng(position);
 
+      var addressText =
+          address?.road ?? "Não foi possível resolver seu endereço";
+
+      if (addressText == "null") {
+        addressText = "Não foi possível resolver seu endereço";
+      }
+
+      log(">>> ADDRESS_TXT: $addressText");
+
       setState(() {
-        _suaPosicao = "${address?.road}";
-        _suaPosicaoController.text = _suaPosicao;
+        _suaPosicao = addressText;
+        _suaPosicaoController.text = addressText;
       });
     });
 
@@ -159,6 +167,7 @@ class _RotaPageState extends State<RotaPage> {
   // Método que cria um campo de texto com um rótulo
   Widget _buildTextField(String label, TextEditingController controller) {
     return TextField(
+      controller: controller,
       decoration: InputDecoration(
         border: const OutlineInputBorder(), // Define a borda do campo de texto
         labelText: label, // Define o rótulo do campo de texto
