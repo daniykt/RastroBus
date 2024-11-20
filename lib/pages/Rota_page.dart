@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -68,17 +69,14 @@ class _RotaPageState extends State<RotaPage> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          _buildTopSection(), // Chama o método que constrói a parte superior
-          _buildListItem(
-              context), // Chama o método que constrói a parte da lista
-          _buildBottomSection(
-              context), // Chama o método que constrói a parte inferior
+          _buildTopSection(), // Parte superior com campos de texto
+          _buildBottomSection(context), // Parte inferior com botões
         ],
       ),
     );
   }
 
-  // Método que constrói a parte superior da tela
+  // Construção da parte superior da tela com campos de texto e botões
   Widget _buildTopSection() {
     return Container(
       color: const Color.fromARGB(129, 28, 199, 128),
@@ -224,48 +222,12 @@ class _RotaPageState extends State<RotaPage> {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: color, // Define a cor de fundo do botão
-        minimumSize:
-            const Size(double.infinity, 80), // Define o tamanho mínimo do botão
+        backgroundColor: color,
+        minimumSize: const Size(double.infinity, 80),
       ),
-      child: Text(text,
-          style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white)), // Define o texto e estilo do botão
-    );
-  }
-
-  Widget _buildListItem(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final listHeight = screenSize.height * 0.25;
-
-    final vmHorario = Provider.of<HorarioViewModel>(context);
-    final horario = vmHorario.horario;
-    return Container(
-      color: const Color(0xFF002124),
-      child: SizedBox(
-        width: double.maxFinite,
-        height: listHeight,
-        child: ListView.builder(
-          itemCount: rotasFiltradas.length,
-          itemBuilder: (context, index) {
-            final rota = rotasFiltradas[index];
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => {
-                _searchController.text = rota.endereco,
-                FocusScope.of(context).requestFocus(FocusNode())
-              },
-              child: RotasprevistasItem(
-                rotasprevistas: rotasFiltradas[index],
-                horario: horario[index],
-                cor: Color(int.parse(rotasFiltradas[index].cor.substring(1),
-                        radix: 16) +
-                    0xFF000000), // Conversão de cor hex para objeto Color
-              ),
-            );
-          },
-        ),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 18, color: Colors.white),
       ),
     );
   }
