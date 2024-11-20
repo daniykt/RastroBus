@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:rastrobus/entidade/horario.dart';
 import 'package:rastrobus/entidade/ponto.dart';
+import 'package:rastrobus/repositorio/api/dio_client.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'rest_client.g.dart';
@@ -17,4 +18,11 @@ abstract class RestClient {
 
   @GET("/horario")
   Future<List<Horario>> getHorario();
+
+  static RestClient? _instance;
+  static RestClient get instance {
+    return _instance ??= RestClient(
+      buildDioClient("https://rastrobus-api.onrender.com"),
+    );
+  }
 }

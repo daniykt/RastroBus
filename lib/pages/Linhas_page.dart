@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
 class LinhasPage extends StatefulWidget {
   const LinhasPage({super.key});
@@ -45,6 +47,8 @@ class _LinhasPageState extends State<LinhasPage> {
               ),
               const SizedBox(height: 15), // Adiciona um espaçamento
               _buildElevatedButton('Azul', Colors.blue, () {
+                selecionaRotasExibicao("#0000FF");
+
                 Navigator.pushNamed(context, "/rotasprevistas", arguments: {
                   'cor': '#0000FF',
                   'buscar_ponto_mais_proximo': false
@@ -52,6 +56,8 @@ class _LinhasPageState extends State<LinhasPage> {
               }), // Chama o método que cria um botão
               const SizedBox(height: 15), // Adiciona um espaçamento
               _buildElevatedButton('Vermelho', Colors.red, () {
+                selecionaRotasExibicao("#FF0000");
+
                 Navigator.pushNamed(context, "/rotasprevistas", arguments: {
                   'cor': '#FF0000',
                   'buscar_ponto_mais_proximo': false
@@ -59,6 +65,8 @@ class _LinhasPageState extends State<LinhasPage> {
               }), // Chama o método que cria outro botão
               const SizedBox(height: 15), // Adiciona um espaçamento
               _buildElevatedButton('Verde', Colors.green, () {
+                selecionaRotasExibicao("#00FF00");
+
                 Navigator.pushNamed(context, "/rotasprevistas", arguments: {
                   'cor': '#00FF00',
                   'buscar_ponto_mais_proximo': false
@@ -86,5 +94,24 @@ class _LinhasPageState extends State<LinhasPage> {
               fontSize: 18,
               color: Colors.white)), // Define o texto e estilo do botão
     );
+  }
+
+  void selecionaRotasExibicao(String selectedColor) {
+    final vm = Provider.of<RotasPrevistasVIewModel>(context, listen: false);
+
+    switch (selectedColor) {
+      case '#0000FF':
+        vm.setRotasSelecionadas(vm.rotasAzuis());
+        break;
+      case '#00FF00':
+        vm.setRotasSelecionadas(vm.rotasVerdes());
+        break;
+      case '#FF0000':
+        vm.setRotasSelecionadas(vm.rotasVermelhas());
+        break;
+      default:
+        vm.setRotasSelecionadas([]);
+        break;
+    }
   }
 }

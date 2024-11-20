@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:provider/provider.dart';
 import 'package:rastrobus/entidade/ponto.dart';
 import 'dart:math';
-
-import 'package:rastrobus/util/cor.dart';
+import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
 // ignore: must_be_immutable
 class Mapa extends StatefulWidget {
   const Mapa({
     super.key,
     required this.rotasprevistas,
-    required this.pontosFiltrados,
     required this.buscarPontoMaisProximo,
+    this.keepAlive = true,
   });
 
-  final List<Ponto> pontosFiltrados;
   final List<Ponto> rotasprevistas;
   final bool buscarPontoMaisProximo;
+  final bool keepAlive;
 
   @override
   State<Mapa> createState() => _MapaState();
 }
 
-class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
+class _MapaState extends State<Mapa>
+    with OSMMixinObserver, AutomaticKeepAliveClientMixin {
   late MapController controller;
-  late List<Ponto> pontosFiltrados;
+
+  Map<String, List<GeoPoint>> pontosExibidosPorCor = {};
 
   @override
   void initState() {
     super.initState();
-
-    // Atribua diretamente os pontosFiltrados que foram passados para o widget
-    pontosFiltrados = widget.pontosFiltrados;
 
     controller = MapController(
       initMapWithUserPosition: const UserTrackingOption(
@@ -39,65 +38,87 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
         unFollowUser: false,
       ),
     );
+
+    controller.addObserver(this);
   }
 
-  // Função que mapeia um valor de string para uma cor no Flutter
-  Color _getColorFromEnum(String enumValue) {
-    switch (enumValue.toUpperCase()) {
+  @override
+  void dispose() {
+    controller.dispose();
+
+    super.dispose();
+  }
+
+  String _getColorName(String colorHex) {
+    switch (colorHex.toUpperCase()) {
       case '#FF0000':
-        return const Color(0xFFFF0000); // Cor vermelha
+        return "vermelho";
       case '#00FF00':
-        return const Color(0xFF00FF00); // Cor verde
+        return "verde";
       case '#0000FF':
-        return const Color(0xFF0000FF); // Cor azul
+        return "azul";
       default:
-        return Colors.black; // Cor padrão (preta)
+        return "preto";
+    }
+  }
+
+  Future<void> _updateMapWithMarkers() async {
+    pontosExibidosPorCor.forEach((cor, pontos) async {
+      print("vai remover ${pontos.length} da cor $cor");
+      for (var ponto in pontos) {
+        await controller.removeMarker(ponto);
+      }
+    });
+
+    final vm = Provider.of<RotasPrevistasVIewModel>(context, listen: false);
+    List<Ponto> pontos = vm.rotasExibicao;
+
+    Map<String, List<GeoPoint>> pontosPorCor = {};
+
+    for (var ponto in pontos) {
+      var cor = _getColorName(ponto.cor);
+
+      pontosPorCor.putIfAbsent(cor, () => []);
+      pontosPorCor[cor]!.add(
+        GeoPoint(
+          latitude: ponto.latitude,
+          longitude: ponto.longitude,
+        ),
+      );
+    }
+
+    print("pontosPorCor.entries: ${pontosPorCor.entries.length}");
+
+    pontosPorCor.forEach((cor, pontos) async {
+      print("vai adicionar ${pontos.length} da cor $cor");
+      await controller.setStaticPosition(pontos, cor);
+    });
+
+    if (mounted) {
+      //força reload na tela
+      setState(() {
+        pontosExibidosPorCor = pontosPorCor;
+      });
     }
   }
 
   @override
-  @mustCallSuper
   Widget build(BuildContext context) {
-    super.build(context);
-    final tema = Theme.of(context);
-
-    // Lista de pontos a serem exibidos no mapa
-    final points = <StaticPositionGeoPoint>[];
-    final selecionados = <Ponto>[];
-
-    if (widget.buscarPontoMaisProximo) {
-      Ponto ponto = findNearestPonto(
-        -48.3688448,
-        -21.6006656,
-        widget.rotasprevistas,
-      );
-      // Pega a localização atual ao invés de uma fixa
-      Color iconColor =
-          _getColorFromEnum(ponto.cor); // Definindo a cor do marcador
-
-      points.add(
-        StaticPositionGeoPoint(
-          ponto.id.toString(),
-          MarkerIcon(
-            icon: Icon(
-              Icons.location_pin,
-              color: iconColor,
-              size: 32,
-            ),
-          ),
-          [GeoPoint(latitude: ponto.latitude, longitude: ponto.longitude)],
-        ),
-      );
-    } else {
-      for (var ponto in widget.rotasprevistas) {
-        points.add(
-          buildMarker(ponto, selecionados),
-        );
-      }
-    }
-
     return OSMFlutter(
       controller: controller, // Controlador do mapa
+      key: const Key("mapa"),
+      mapIsLoading: const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 12),
+            Text("Aguarde enquanto carregamos o mapa..."),
+          ],
+        ),
+      ),
       onGeoPointClicked: (point) {
         final ponto = findByGeoPoint(widget.rotasprevistas, point);
         if (ponto != null) {
@@ -111,7 +132,41 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
           maxZoomLevel: 19,
           stepZoom: 1.0,
         ),
-        staticPoints: points, // Adiciona todos os pontos
+        staticPoints: [
+          StaticPositionGeoPoint(
+            "azul",
+            const MarkerIcon(
+              icon: Icon(
+                Icons.location_pin,
+                color: Colors.blue,
+                size: 40,
+              ),
+            ),
+            [],
+          ),
+          StaticPositionGeoPoint(
+            "vermelho",
+            const MarkerIcon(
+              icon: Icon(
+                Icons.location_pin,
+                color: Colors.red,
+                size: 40,
+              ),
+            ),
+            [],
+          ),
+          StaticPositionGeoPoint(
+            "verde",
+            const MarkerIcon(
+              icon: Icon(
+                Icons.location_pin,
+                color: Colors.green,
+                size: 40,
+              ),
+            ),
+            [],
+          ),
+        ],
         userLocationMarker: UserLocationMaker(
           personMarker: const MarkerIcon(
             icon: Icon(
@@ -128,27 +183,6 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
           ),
         ),
       ),
-    );
-  }
-
-  StaticPositionGeoPoint buildMarker(Ponto ponto, List<Ponto> selecionados) {
-    final selected = selecionados.indexWhere((p) => p.id == ponto.id) >= 0;
-
-    return StaticPositionGeoPoint(
-      "${ponto.id}",
-      MarkerIcon(
-        icon: Icon(
-          Icons.location_pin,
-          size: 32,
-          color: selected ? Colors.cyan : _getColorFromEnum(ponto.cor),
-        ),
-      ),
-      [
-        GeoPoint(
-          latitude: ponto.latitude,
-          longitude: ponto.longitude,
-        ),
-      ],
     );
   }
 
@@ -202,5 +236,12 @@ class _MapaState extends State<Mapa> with AutomaticKeepAliveClientMixin {
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
+
+  @override
+  Future<void> mapIsReady(bool isReady) async {
+    if (isReady) {
+      await _updateMapWithMarkers();
+    }
+  }
 }

@@ -123,8 +123,7 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
       width: double.infinity,
       child: Mapa(
         rotasprevistas: pontosFiltrados,
-        buscarPontoMaisProximo: false,
-        pontosFiltrados: pontosFiltrados, // Adição dos pontos filtrados ao mapa
+        buscarPontoMaisProximo: false, // Adição dos pontos filtrados ao mapa
       ),
     );
   }

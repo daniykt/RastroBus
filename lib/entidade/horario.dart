@@ -5,17 +5,21 @@ part 'horario.g.dart';
 @JsonSerializable()
 class Horario {
   final int id;
-  final int ponto_id;
-  final String hora_chegada;
+
+  @JsonKey(name: "ponto_id")
+  final int pontoId;
+
+  @JsonKey(name: "hora_chegada")
+  final String horaChegada;
 
   Horario({
     required this.id,
-    required this.ponto_id,
-    required this.hora_chegada,
+    required this.pontoId,
+    required this.horaChegada,
   });
 
   factory Horario.fromJson(Map<String, dynamic> json) =>
       _$HorarioFromJson(json);
 
-  Map<String, dynamic> toJson() => _$HorarioToJson(this); 
+  Map<String, dynamic> toJson() => _$HorarioToJson(this);
 }

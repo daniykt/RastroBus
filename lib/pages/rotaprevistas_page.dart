@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rastrobus/componentes/mapa.dart';
 import 'package:rastrobus/componentes/rotasprevistas_item.dart';
-import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/vm/horario_vm.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
@@ -28,20 +27,20 @@ class RotasPrevistasPage extends StatelessWidget {
     final horario = vmHorario.horario;
 
     // Filtrando as rotas conforme a cor selecionada
-    List<Ponto> rotasprevistas = [];
-    switch (selectedColor) {
-      case '#0000FF':
-        rotasprevistas = vm.rotasAzuis();
-        break;
-      case '#00FF00':
-        rotasprevistas = vm.rotasVerdes();
-        break;
-      case '#FF0000':
-        rotasprevistas = vm.rotasVermelhas();
-        break;
-      default:
-        rotasprevistas = vm.rotasprevistas;
-    }
+    // List<Ponto> rotasprevistas = [];
+    // switch (selectedColor) {
+    //   case '#0000FF':
+    //     rotasprevistas = vm.rotasAzuis();
+    //     break;
+    //   case '#00FF00':
+    //     rotasprevistas = vm.rotasVerdes();
+    //     break;
+    //   case '#FF0000':
+    //     rotasprevistas = vm.rotasVermelhas();
+    //     break;
+    //   default:
+    //     rotasprevistas = vm.rotasprevistas;
+    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -57,9 +56,9 @@ class RotasPrevistasPage extends StatelessWidget {
             child: SizedBox(
               width: double.infinity,
               child: Mapa(
-                rotasprevistas: rotasprevistas,
+                rotasprevistas: vm.rotasExibicao,
                 buscarPontoMaisProximo: buscarPontoMaisProximo,
-                pontosFiltrados: const [],
+                keepAlive: false,
               ),
             ),
           ),
@@ -69,18 +68,18 @@ class RotasPrevistasPage extends StatelessWidget {
               width: double.maxFinite,
               height: listHeight,
               child: ListView.builder(
-                itemCount: rotasprevistas.length,
+                itemCount: vm.rotasExibicao.length,
                 itemBuilder: (context, index) => GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () => Navigator.pushNamed(
                     context,
                     "/detalheponto",
-                    arguments: rotasprevistas[index].id,
+                    arguments: vm.rotasExibicao[index].id,
                   ),
                   child: RotasprevistasItem(
-                    rotasprevistas: rotasprevistas[index],
+                    rotasprevistas: vm.rotasExibicao[index],
                     horario: horario[index],
-                    cor: Color(int.parse(rotasprevistas[index].cor.substring(1),
+                    cor: Color(int.parse(vm.rotasExibicao[index].cor.substring(1),
                             radix: 16) +
                         0xFF000000), // Converte a cor hexadecimal para um objeto Color
                   ),

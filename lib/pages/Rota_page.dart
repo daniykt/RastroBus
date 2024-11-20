@@ -40,8 +40,6 @@ class _RotaPageState extends State<RotaPage> {
         addressText = "Não foi possível resolver seu endereço";
       }
 
-      log(">>> ADDRESS_TXT: $addressText");
-
       setState(() {
         _suaPosicao = addressText;
         _suaPosicaoController.text = addressText;
@@ -107,8 +105,7 @@ class _RotaPageState extends State<RotaPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => Mapa(
-                    pontosFiltrados: rotasFiltradas,
-                    rotasprevistas: const [],
+                    rotasprevistas: rotasFiltradas,
                     buscarPontoMaisProximo: false,
                   ),
                 ),

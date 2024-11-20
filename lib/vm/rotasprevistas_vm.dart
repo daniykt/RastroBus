@@ -5,6 +5,7 @@ import 'package:rastrobus/repositorio/repositorio_rotasprevistas.dart';
 
 class RotasPrevistasVIewModel extends ChangeNotifier {
   late List<Ponto> rotasprevistas = [];
+  List<Ponto> rotasSelecionadas = [];
 
   RotasPrevistasVIewModel useLista() {
     final future = RepositorioRotasprevistas().select();
@@ -34,6 +35,11 @@ class RotasPrevistasVIewModel extends ChangeNotifier {
     return rotasprevistas.where((rp) => rp.id == id).firstOrNull;
   }
 
+  void setRotasSelecionadas(List<Ponto> pontos) {
+    rotasSelecionadas = pontos;
+    notifyListeners();
+  }
+
   List<Ponto> rotasVerdes() {
     return rotasprevistas.where((rota) => rota.cor == '#00FF00').toList();
   }
@@ -45,6 +51,8 @@ class RotasPrevistasVIewModel extends ChangeNotifier {
   List<Ponto> rotasAzuis() {
     return rotasprevistas.where((rota) => rota.cor == '#0000FF').toList();
   }
+
+  List<Ponto> get rotasExibicao => rotasSelecionadas.isEmpty ? rotasprevistas : rotasSelecionadas;
 
   static ChangeNotifierProvider<RotasPrevistasVIewModel> novo() =>
       ChangeNotifierProvider(
