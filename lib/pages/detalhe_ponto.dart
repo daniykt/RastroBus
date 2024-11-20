@@ -21,7 +21,9 @@ class DetalhePonto extends StatelessWidget {
         ),
         backgroundColor: const Color(0xFF004445), // Cor do AppBar
       ),
-      body: argument == null ? _emptyBody(context) : _body(context, argument as int),
+      body: argument == null
+          ? _emptyBody(context)
+          : _body(context, argument as int),
     );
   }
 
@@ -31,7 +33,9 @@ class DetalhePonto extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text("Nenhum ponto de ônibus selecionado."),
-            const SizedBox(height: 12,),
+            const SizedBox(
+              height: 12,
+            ),
             ElevatedButton(
               onPressed: () => Navigator.pop(context), // Voltar à tela anterior
               child: const Text("Voltar"),
@@ -51,7 +55,8 @@ class DetalhePonto extends StatelessWidget {
           return _onError(context); // Exibe erro se houver falha
         }
         if (snapshot.hasData) {
-          return _onSuccess(context, snapshot.data!, vm); // Exibe os dados carregados
+          return _onSuccess(
+              context, snapshot.data!, vm); // Exibe os dados carregados
         }
         return _onLoading(); // Exibe loading enquanto os dados são carregados
       },
@@ -76,7 +81,8 @@ class DetalhePonto extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-                "Não foi possível carregar as informações do ponto. Volte e tente novamente.",),
+              "Não foi possível carregar as informações do ponto. Volte e tente novamente.",
+            ),
             const SizedBox(
               height: 12,
             ),
@@ -89,9 +95,11 @@ class DetalhePonto extends StatelessWidget {
       );
 
   // Exibe as informações do ponto de ônibus
-  Widget _onSuccess(BuildContext context, Ponto ponto, RotasPrevistasVIewModel vm) {
+  Widget _onSuccess(
+      BuildContext context, Ponto ponto, RotasPrevistasVIewModel vm) {
     return FutureBuilder<String?>(
-      future: vm.loadHorarioChegadaByPontoId(ponto.id), // Carregar o horário de chegada
+      future: vm.loadHorarioChegadaByPontoId(
+          ponto.id), // Carregar o horário de chegada
       builder: (context, horarioSnapshot) {
         return Center(
           child: Padding(
@@ -112,10 +120,11 @@ class DetalhePonto extends StatelessWidget {
                     children: [
                       Text(
                         "Rua e Referência",
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.teal.shade700,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.teal.shade700,
+                                ),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -155,7 +164,9 @@ class DetalhePonto extends StatelessWidget {
                   width: 300,
                   height: 16,
                   decoration: BoxDecoration(
-                    color: Color(int.parse(ponto.cor.replaceFirst('#', ''), radix: 16) | 0xFF000000),
+                    color: Color(
+                        int.parse(ponto.cor.replaceFirst('#', ''), radix: 16) |
+                            0xFF000000),
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
@@ -180,7 +191,9 @@ class DetalhePonto extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        horarioSnapshot.data ?? "Indisponível", // Exibe o horário
+                        //TODO como o método do VM não foi implementado, aqui aparece sempre indisponivel!
+                        horarioSnapshot.data ??
+                            "Indisponível", // Exibe o horário
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,

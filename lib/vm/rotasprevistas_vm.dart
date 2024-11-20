@@ -50,4 +50,8 @@ class RotasPrevistasVIewModel extends ChangeNotifier {
       ChangeNotifierProvider(
         create: (_) => RotasPrevistasVIewModel().useLista(),
       );
+
+  loadHorarioChegadaByPontoId(int id) {
+    //TODO se isso existe falta código qui
+  }
 }

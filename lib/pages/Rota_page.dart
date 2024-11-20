@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:rastrobus/componentes/mapa.dart';
+import 'package:rastrobus/componentes/rotasprevistas_item.dart';
 import 'package:rastrobus/entidade/ponto.dart';
 import 'package:rastrobus/util/addresses.dart';
 import 'package:rastrobus/util/location.dart';
+import 'package:rastrobus/vm/horario_vm.dart';
 import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
 class RotaPage extends StatefulWidget {
@@ -67,8 +69,10 @@ class _RotaPageState extends State<RotaPage> {
       body: Column(
         children: <Widget>[
           _buildTopSection(), // Chama o método que constrói a parte superior
-          _buildListItem(context), // Chama o método que constrói a parte da lista
-          _buildBottomSection(context), // Chama o método que constrói a parte inferior
+          _buildListItem(
+              context), // Chama o método que constrói a parte da lista
+          _buildBottomSection(
+              context), // Chama o método que constrói a parte inferior
         ],
       ),
     );
@@ -255,6 +259,9 @@ class _RotaPageState extends State<RotaPage> {
               child: RotasprevistasItem(
                 rotasprevistas: rotasFiltradas[index],
                 horario: horario[index],
+                cor: Color(int.parse(rotasFiltradas[index].cor.substring(1),
+                        radix: 16) +
+                    0xFF000000), // Conversão de cor hex para objeto Color
               ),
             );
           },
