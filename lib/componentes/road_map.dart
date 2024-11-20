@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import 'package:provider/provider.dart';
 import 'package:rastrobus/entidade/ponto.dart';
-import 'package:rastrobus/vm/rotasprevistas_vm.dart';
 
 class RoadMap extends StatefulWidget {
   final Ponto target;
