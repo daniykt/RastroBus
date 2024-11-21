@@ -18,7 +18,7 @@ class Aplicacao extends StatelessWidget {
       routes: {
        "/previsaopage": (_) => const PrevissoesPage(),
         "/linhapage": (_) => const LinhasPage(),
-        "/BarraNavegacao": (_) => const BarraNagegacao(),
+        "/BarraNavegacao": (_) => const BarraNavegacao(),
         "/rotapage": (_) => const RotaPage(),
         "/rotasprevistas": (_) => const RotasPrevistasPage(),
         "/detalheponto": (_) => const DetalhePonto(),
