@@ -31,23 +31,32 @@ class _LinhasPageState extends State<LinhasPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
-                  padding: const EdgeInsets.only(left: 90, right: 90),
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(0, 33, 36, 1), // Cor de fundo
-                    borderRadius:
-                        BorderRadius.circular(50.0), // Cantos arredondados
-                  ),
-                  child: const Text(
-                    'LINHAS DISPONIVEIS',
+                margin: EdgeInsets.symmetric(
+                  horizontal:
+                      MediaQuery.of(context).size.width * 0.1, // 10% da largura
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width *
+                      0.1, // Ajuste proporcional
+                ),
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(0, 33, 36, 1),
+                  borderRadius: BorderRadius.circular(50.0),
+                ),
+                child: const FittedBox(
+                  fit: BoxFit
+                      .scaleDown, // Reduz o tamanho do texto se necessário
+                  child: Text(
+                    'LINHAS DISPONÍVEIS',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white, // Define o estilo do texto
+                      color: Colors.white,
                     ),
-                    overflow: TextOverflow
-                        .ellipsis, // Previne quebra de linha e adiciona "..."
-                    softWrap: false, // Impede a quebra automática de linha
-                  )),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 15), // Adiciona um espaçamento
               Padding(
                 padding: const EdgeInsets.only(left: 15, right: 15),
