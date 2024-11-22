@@ -87,31 +87,58 @@ class _RotaPageState extends State<RotaPage> {
   // Construção da parte superior da tela com campos de texto e botões
   Widget _buildTopSection() {
     return Container(
-      color: const Color.fromARGB(129, 28, 199, 128),
-      padding: const EdgeInsets.all(8.0),
+      color: Color(0xFF004445), // Cor sólida de fundo
+      padding: const EdgeInsets.all(12.0),
       child: Column(
         children: <Widget>[
           _buildTextField(
             'Sua Posição',
             _suaPosicaoController,
+            Icons.my_location,
           ),
-          const SizedBox(height: 8), // Adiciona um espaçamento
+          const SizedBox(height: 12), // Adiciona um espaçamento
           _buildAutoCompleteTextField(
             'Destino Final',
             _searchController,
+            Icons.location_on,
           ),
-          const SizedBox(height: 8), // Adiciona um espaçamento
+          const SizedBox(height: 16), // Adiciona um espaçamento
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 12,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              backgroundColor: Colors.blue.shade600,
+            ),
             onPressed: () {
               Navigator.pushNamed(
                 context,
                 "/route",
-                arguments: RouteQuery(_userPosition, _targetPosition),
+                arguments: RouteQuery(
+                  _userPosition,
+                  _targetPosition,
+                ),
               );
             }, // Define a ação do botão (vazia por enquanto)
-            child: const Text('Buscar',
-                style: TextStyle(
-                    color: Colors.blue)), // Define o texto e estilo do botão
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.search, color: Colors.white),
+                SizedBox(width: 8),
+                Text(
+                  'Buscar',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -120,15 +147,27 @@ class _RotaPageState extends State<RotaPage> {
 
   // Campo de texto com autocomplete para o "Destino Final"
   Widget _buildAutoCompleteTextField(
-      String label, TextEditingController controller) {
+      String label, TextEditingController controller, IconData icon) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         TextField(
           controller: controller,
+          style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
-            labelText: label,
-            border: const OutlineInputBorder(),
+            prefixIcon: Icon(icon, color: Colors.white), // Ícone a ser exibido
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.1),
+            border: const OutlineInputBorder(
+              borderSide: BorderSide.none, // Define a borda do campo de texto
+            ),
+            labelText: label, // Define o rótulo do campo de texto
+            labelStyle: const TextStyle(color: Colors.white), // Cor do rótulo
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.blue, // Define a cor da borda quando focada
+              ),
+            ),
           ),
           onChanged: (query) {
             setState(() {
@@ -139,42 +178,62 @@ class _RotaPageState extends State<RotaPage> {
             });
           },
         ),
-        // Lista suspensa de sugestões com base no filtro
-        if (_searchController.text.isNotEmpty)
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: rotasFiltradas.length,
-            itemBuilder: (context, index) {
-              final rota = rotasFiltradas[index];
-              return ListTile(
-                title: Text(rota.endereco),
-                onTap: () {
-                  setState(() {
-                    _targetPosition = rota;
-                  });
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              // Lista suspensa de sugestões com base no filtro
+              if (_searchController.text.isNotEmpty)
+                SizedBox(
+                  height:
+                      200, // Definindo um limite de altura para evitar overflow
+                  child: ListView.builder(
+                    shrinkWrap:
+                        true, // Isso faz com que o ListView ocupe apenas o espaço necessário
+                    itemCount: rotasFiltradas.length,
+                    itemBuilder: (context, index) {
+                      final rota = rotasFiltradas[index];
+                      return ListTile(
+                        textColor: const Color(0xFFF0F0F0),
+                        title: Text(rota.endereco),
+                        onTap: () {
+                          setState(() {
+                            _targetPosition = rota;
+                          });
 
-                  _searchController.text = rota.endereco;
-                  FocusScope.of(context).unfocus();
-                },
-              );
-            },
+                          _searchController.text = rota.endereco;
+                          FocusScope.of(context).unfocus();
+                        },
+                      );
+                    },
+                  ),
+                ),
+            ],
           ),
+        )
       ],
     );
   }
 
-  // Método que cria um campo de texto com um rótulo
-  Widget _buildTextField(String label, TextEditingController controller) {
+// Método que cria um campo de texto com um rótulo
+  Widget _buildTextField(
+      String label, TextEditingController controller, IconData icon) {
     return TextField(
       controller: controller,
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        border: const OutlineInputBorder(), // Define a borda do campo de texto
+        prefixIcon: Icon(icon, color: Colors.white), // Ícone a ser exibido
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.1),
+        border: const OutlineInputBorder(
+          borderSide: BorderSide.none,
+        ), // Define a borda do campo de texto
         labelText: label, // Define o rótulo do campo de texto
         labelStyle:
             const TextStyle(color: Colors.white), // Define a cor do rótulo
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
-              color: Colors.blue), // Define a cor da borda quando focada
+            color: Colors.blue, // Define a cor da borda quando focada
+          ),
         ),
       ),
     );
@@ -197,22 +256,31 @@ class _RotaPageState extends State<RotaPage> {
                 ), // Define o estilo do texto
               ),
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton(
-                'Azul',
-                Colors.blue,
-                () => findPontoMaisProximo(context, _userPosition, "#0000FF"),
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: _buildElevatedButton(
+                  'Azul',
+                  Colors.blue,
+                  () => findPontoMaisProximo(context, _userPosition, "#0000FF"),
+                ),
               ), // Chama o método que cria um botão
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton(
-                'Vermelho',
-                Colors.red,
-                () => findPontoMaisProximo(context, _userPosition, "#FF0000"),
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: _buildElevatedButton(
+                  'Vermelho',
+                  Colors.red,
+                  () => findPontoMaisProximo(context, _userPosition, "#FF0000"),
+                ),
               ), // Chama o método que cria outro botão
               const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton(
-                'Verde',
-                Colors.green,
-                () => findPontoMaisProximo(context, _userPosition, "#00FF00"),
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: _buildElevatedButton(
+                  'Verde',
+                  Colors.green,
+                  () => findPontoMaisProximo(context, _userPosition, "#00FF00"),
+                ),
               ),
             ],
           ),

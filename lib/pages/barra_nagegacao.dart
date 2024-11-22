@@ -68,19 +68,37 @@ class _HomePageState extends State<BarraNagegacao>
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: selectedIndex,
           selectedItemColor: Colors.blue,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.access_time),
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  selectedIndex == 0 ? Icons.access_time : Icons.timelapse,
+                  key: ValueKey<int>(selectedIndex),
+                ),
+              ),
               label: "Previsões",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.swap_calls),
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  selectedIndex == 1 ? Icons.swap_calls : Icons.call_split,
+                  key: ValueKey<int>(selectedIndex),
+                ),
+              ),
               label: "Linhas",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.navigation),
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  selectedIndex == 2 ? Icons.navigation : Icons.directions,
+                  key: ValueKey<int>(selectedIndex),
+                ),
+              ),
               label: "Rotas",
-            )
+            ),
           ],
           onTap: onItemClicked),
     );

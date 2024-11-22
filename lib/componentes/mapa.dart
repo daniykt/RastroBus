@@ -163,7 +163,7 @@ class _MapaState extends State<Mapa> with OSMMixinObserver {
             icon: Icon(
               Icons.person_pin,
               color: Colors.blue,
-              size: 32,
+              size: 64,
             ),
           ),
           directionArrowMarker: const MarkerIcon(

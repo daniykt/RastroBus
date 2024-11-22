@@ -69,21 +69,27 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
     return Column(
       children: [
         Container(
-          color: const Color(0xFFF0F0F0),
           padding: const EdgeInsets.all(8.0),
           child: TextField(
             controller: _searchController,
             style: const TextStyle(color: Color(0xFF424242)),
             decoration: const InputDecoration(
-              border: OutlineInputBorder(), // Define a borda padrão
-              labelText: 'Pesquise um local de embarque',
-              labelStyle: TextStyle(
-                color: Color.fromARGB(255, 0, 0, 0),
-              ), // Define a cor do rótulo
-              focusedBorder: OutlineInputBorder(
+              filled: true,
+              fillColor: Colors.white,
+              hintText: 'Pesquise um local de embarque',
+              hintStyle: TextStyle(color: Color(0xFFB0B0B0)),
+              prefixIcon: Icon(Icons.search, color: Color(0xFF00796B)),
+              border: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.blue,
-                ), // Cor da borda ao focar
+                  color: Color(0xFF00796B), // Cor da borda
+                  width: 2.0, // Largura da borda
+                ),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xFF00796B), // Cor da borda ao focar
+                  width: 2.0,
+                ),
               ),
             ),
           ),

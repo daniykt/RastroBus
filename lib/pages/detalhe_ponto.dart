@@ -104,107 +104,173 @@ class DetalhePonto extends StatelessWidget {
       future: vm.loadHorarioChegadaByPontoId(
           context, ponto.id), // Carregar o horário de chegada
       builder: (context, horarioSnapshot) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Exibe a rua e bairro do ponto
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFb3cde0),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Rua e Referência",
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.teal.shade700,
-                                ),
+        return Expanded(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Fundo com gradiente animado
+                  AnimatedContainer(
+                    duration: const Duration(seconds: 4),
+                    curve: Curves.easeInOut,
+                    padding: const EdgeInsets.all(24),
+                    constraints: const BoxConstraints(
+                      minWidth: double.infinity,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color.fromARGB(255, 255, 255, 255),
+                          const Color.fromARGB(255, 173, 243, 236),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        stops: const [0.0, 1.0],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        ponto.endereco, // Endereço do ponto
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontStyle: FontStyle.italic,
-                              color: const Color(0xFF333333),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.directions_bus,
+                                color: Colors.teal.shade700),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                "Ponto ${ponto.id} - Rua e Referência",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.teal.shade700,
+                                    ),
+                              ),
                             ),
-                      ),
-                      Text(
-                        ponto.bairro, // Bairro do ponto
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: const Color(0xFF666666),
-                            ),
-                      ),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          ponto.endereco,
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.black87,
+                                  ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-
-                // Exibe imagem do ponto ou uma imagem padrão
-                _getImage(ponto),
-                const SizedBox(height: 8),
-
-                // Exibe nome do bairro
-                Text(
-                  ponto.bairro,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54,
-                      ),
-                ),
-                const SizedBox(height: 8),
-
-                // Exibe a cor da linha do ônibus
-                Container(
-                  width: 300,
-                  height: 16,
-                  decoration: BoxDecoration(
-                    color: Color(
-                        int.parse(ponto.cor.replaceFirst('#', ''), radix: 16) |
-                            0xFF000000),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Exibe o horário de chegada ou "Indisponível"
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFb3cde0),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
+                  _getImage(ponto),
+                  const SizedBox(height: 16),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Horário de chegada:",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                      ),
+                      Icon(Icons.location_on, color: Colors.black54),
                       const SizedBox(width: 8),
                       Text(
-                        horarioSnapshot.data ??
-                            "Indisponível", // Exibe o horário
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
+                        ponto.bairro,
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.black54,
+                                ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  // Barra de cor com suavização
+                  Container(
+                    width: 250,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Color(int.parse(ponto.cor.replaceFirst('#', ''),
+                              radix: 16) |
+                          0xFF000000),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Horário de chegada com gradiente animado
+                  AnimatedContainer(
+                    duration: const Duration(seconds: 4),
+                    curve: Curves.easeInOut,
+                    padding: const EdgeInsets.all(16), // Padding interno
+                    margin: const EdgeInsets.symmetric(
+                        horizontal:
+                            16), // Margem nas laterais para afastar das bordas
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color.fromARGB(255, 255, 255, 255),
+                          Color.fromARGB(255, 173, 243, 236),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.access_time, color: Colors.black87),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                "Horário de chegada",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          horarioSnapshot.data ??
+                              "Indisponível", // Exibe o horário
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         );
@@ -216,7 +282,6 @@ class DetalhePonto extends StatelessWidget {
   Widget _getImage(Ponto ponto) => ponto.imagem == null
       ? Image.asset("lib/assets/images/sem_imagem.png") // Imagem padrão
       : ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
           child: Image.memory(
             base64Decode(ponto.imagem!), // Decodifica a imagem base64
             fit: BoxFit.cover,

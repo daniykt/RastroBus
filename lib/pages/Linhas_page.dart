@@ -31,47 +31,59 @@ class _LinhasPageState extends State<LinhasPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.only(left: 90, right: 90),
-                decoration: BoxDecoration(
-                  color: const Color.fromRGBO(0, 33, 36, 1), // Cor de fundo
-                  borderRadius:
-                      BorderRadius.circular(50.0), // Cantos arredondados
-                ),
-                child: const Text(
-                  'LINHAS DISPONIVEIS',
-                  style: TextStyle(
+                  padding: const EdgeInsets.only(left: 90, right: 90),
+                  decoration: BoxDecoration(
+                    color: const Color.fromRGBO(0, 33, 36, 1), // Cor de fundo
+                    borderRadius:
+                        BorderRadius.circular(50.0), // Cantos arredondados
+                  ),
+                  child: const Text(
+                    'LINHAS DISPONIVEIS',
+                    style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white), // Define o estilo do texto
-                ),
+                      color: Colors.white, // Define o estilo do texto
+                    ),
+                    overflow: TextOverflow
+                        .ellipsis, // Previne quebra de linha e adiciona "..."
+                    softWrap: false, // Impede a quebra automática de linha
+                  )),
+              const SizedBox(height: 15), // Adiciona um espaçamento
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: _buildElevatedButton('Azul', Colors.blue, () {
+                  selecionaRotasExibicao("#0000FF");
+
+                  Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                    'cor': '#0000FF',
+                    'buscar_ponto_mais_proximo': false
+                  });
+                }),
+              ), // Chama o método que cria um botão
+              const SizedBox(height: 15), // Adiciona um espaçamento
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: _buildElevatedButton('Vermelho', Colors.red, () {
+                  selecionaRotasExibicao("#FF0000");
+
+                  Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                    'cor': '#FF0000',
+                    'buscar_ponto_mais_proximo': false
+                  });
+                }),
+              ), // Chama o método que cria outro botão
+              const SizedBox(height: 15), // Adiciona um espaçamento
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: _buildElevatedButton('Verde', Colors.green, () {
+                  selecionaRotasExibicao("#00FF00");
+
+                  Navigator.pushNamed(context, "/rotasprevistas", arguments: {
+                    'cor': '#00FF00',
+                    'buscar_ponto_mais_proximo': false
+                  });
+                }),
               ),
-              const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Azul', Colors.blue, () {
-                selecionaRotasExibicao("#0000FF");
-
-                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
-                  'cor': '#0000FF',
-                  'buscar_ponto_mais_proximo': false
-                });
-              }), // Chama o método que cria um botão
-              const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Vermelho', Colors.red, () {
-                selecionaRotasExibicao("#FF0000");
-
-                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
-                  'cor': '#FF0000',
-                  'buscar_ponto_mais_proximo': false
-                });
-              }), // Chama o método que cria outro botão
-              const SizedBox(height: 15), // Adiciona um espaçamento
-              _buildElevatedButton('Verde', Colors.green, () {
-                selecionaRotasExibicao("#00FF00");
-
-                Navigator.pushNamed(context, "/rotasprevistas", arguments: {
-                  'cor': '#00FF00',
-                  'buscar_ponto_mais_proximo': false
-                });
-              }),
             ],
           ),
         ),
