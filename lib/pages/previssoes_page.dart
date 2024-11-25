@@ -85,7 +85,7 @@ class _PrevissoesPageState extends State<PrevissoesPage> {
                   width: 2.0, // Largura da borda
                 ),
               ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder:  OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Color(0xFF00796B), // Cor da borda ao focar
                   width: 2.0,

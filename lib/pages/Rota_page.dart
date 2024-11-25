@@ -87,7 +87,7 @@ class _RotaPageState extends State<RotaPage> {
   // Construção da parte superior da tela com campos de texto e botões
   Widget _buildTopSection() {
     return Container(
-      color: Color(0xFF004445), // Cor sólida de fundo
+      color: const Color(0xFF004445), // Cor sólida de fundo
       padding: const EdgeInsets.all(12.0),
       child: Column(
         children: <Widget>[

@@ -3,14 +3,14 @@ import 'package:rastrobus/pages/linhas_page.dart';
 import 'package:rastrobus/pages/previssoes_page.dart';
 import 'rota_page.dart';
 
-class BarraNagegacao extends StatefulWidget {
-  const BarraNagegacao({super.key});
+class BarraNavegacao extends StatefulWidget {
+  const BarraNavegacao({super.key});
 
   @override
-  State<BarraNagegacao> createState() => _HomePageState();
+  State<BarraNavegacao> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<BarraNagegacao>
+class _HomePageState extends State<BarraNavegacao>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int selectedIndex =
@@ -38,11 +38,33 @@ class _HomePageState extends State<BarraNagegacao>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("RastroBus"),
-        foregroundColor: Colors.white,
-        backgroundColor: const Color(0xFF004445),
+appBar: AppBar(
+  title: Row(
+    mainAxisAlignment: MainAxisAlignment.start, // Alinha os itens à esquerda.
+    children: [
+      const Text(
+        "RastroBus", // Nome do app.
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+        ),
       ),
+        Expanded(
+          child: Center(
+            child: Image.asset(
+              'lib/assets/images/barra.png', // Caminho da imagem.
+              height: 50, // Ajuste a altura da imagem.
+            ),
+          ),
+        ),
+    ],
+  ),
+  foregroundColor: Colors.white, // Cor dos ícones.
+  backgroundColor: const Color(0xFF004445), // Cor de fundo original.
+),
+
+
+
       body: TabBarView(
         physics: const NeverScrollableScrollPhysics(),
         controller: _tabController,

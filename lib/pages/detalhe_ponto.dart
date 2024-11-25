@@ -120,14 +120,14 @@ class DetalhePonto extends StatelessWidget {
                       minWidth: double.infinity,
                     ),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
+                      gradient: const LinearGradient(
                         colors: [
-                          const Color.fromARGB(255, 255, 255, 255),
-                          const Color.fromARGB(255, 173, 243, 236),
+                           Color.fromARGB(255, 255, 255, 255),
+                           Color.fromARGB(255, 173, 243, 236),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        stops: const [0.0, 1.0],
+                        stops: [0.0, 1.0],
                       ),
                       boxShadow: [
                         BoxShadow(
@@ -178,7 +178,7 @@ class DetalhePonto extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.location_on, color: Colors.black54),
+                     const Icon(Icons.location_on, color: Colors.black54),
                       const SizedBox(width: 8),
                       Text(
                         ponto.bairro,
@@ -240,7 +240,7 @@ class DetalhePonto extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.access_time, color: Colors.black87),
+                          const Icon(Icons.access_time, color: Colors.black87),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(

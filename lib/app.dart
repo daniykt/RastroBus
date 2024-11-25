@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rastrobus/pages/barra_nagegacao.dart';
+import 'package:rastrobus/pages/barra_navegacao.dart';
 import 'package:rastrobus/pages/detalhe_ponto.dart';
+import 'package:rastrobus/pages/inicial_page.dart';
 import 'package:rastrobus/pages/linhas_page.dart';
 import 'package:rastrobus/pages/previssoes_page.dart';
 import 'package:rastrobus/pages/rota_page.dart';
@@ -15,11 +16,12 @@ class Aplicacao extends StatelessWidget {
     return MaterialApp(
       title: "RastroBus",
       debugShowCheckedModeBanner: false,
-      initialRoute: "/BarraNavegacao",
+      initialRoute: "/inicio",
       routes: {
+        "/inicio": (_) =>  InicioPage(),
        "/previsaopage": (_) => const PrevissoesPage(),
         "/linhapage": (_) => const LinhasPage(),
-        "/BarraNavegacao": (_) => const BarraNagegacao(),
+        "/BarraNavegacao": (_) => const BarraNavegacao(),
         "/rotapage": (_) => const RotaPage(),
         "/rotasprevistas": (_) => const RotasPrevistasPage(),
         "/detalheponto": (_) => const DetalhePonto(),
