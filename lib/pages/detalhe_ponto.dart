@@ -147,7 +147,7 @@ class DetalhePonto extends StatelessWidget {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                "Ponto ${ponto.id} - Rua e Referência",
+                                "Ponto ${ponto.id} - Endereço e Referência",
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall

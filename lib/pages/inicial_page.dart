@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rastrobus/pages/barra_navegacao.dart';
 
 
@@ -44,17 +45,33 @@ class _InicioPageState extends State<InicioPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: FadeTransition(
-        opacity: _animation,
-        child: Center(
-          child: Image.asset(
-            'lib/assets/images/logo.jpg',
-            width: MediaQuery.of(context).size.width * 0.4,
-            height: MediaQuery.of(context).size.width * 0.4,
+  backgroundColor: Colors.white,
+  body: FadeTransition(
+    opacity: _animation,
+    child: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Centraliza os widgets na vertical
+        children: [
+          Image.asset(
+            'lib/assets/images/inicio.png',
+            width: MediaQuery.of(context).size.width * 0.7,
+            height: MediaQuery.of(context).size.width * 0.7,
           ),
-        ),
+         const SizedBox(height: 16), // Espaço entre a imagem e o texto
+          Text(
+            'RastroBus',
+            style: GoogleFonts.poppins(
+              fontSize: 40, // Tamanho da fonte
+              fontWeight: FontWeight.bold, // Texto em negrito
+              color: Colors.black, // Cor do texto
+              letterSpacing: 1.2,
+            ),
+          ),
+        ],
       ),
-    );
+    ),
+  ),
+);
+
   }
 }

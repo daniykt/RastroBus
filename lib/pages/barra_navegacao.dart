@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rastrobus/pages/linhas_page.dart';
 import 'package:rastrobus/pages/previssoes_page.dart';
 import 'rota_page.dart';
@@ -42,18 +43,19 @@ appBar: AppBar(
   title: Row(
     mainAxisAlignment: MainAxisAlignment.start, // Alinha os itens à esquerda.
     children: [
-      const Text(
+       Text(
         "RastroBus", // Nome do app.
-        style: TextStyle(
+        style: GoogleFonts.poppins(
           color: Colors.white,
           fontSize: 20,
+          letterSpacing: 1.2,
         ),
       ),
         Expanded(
           child: Center(
             child: Image.asset(
-              'lib/assets/images/barra.png', // Caminho da imagem.
-              height: 50, // Ajuste a altura da imagem.
+              'lib/assets/images/barra2.png', // Caminho da imagem.
+              height: 90, // Ajuste a altura da imagem.
             ),
           ),
         ),
