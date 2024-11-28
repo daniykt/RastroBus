@@ -179,25 +179,39 @@ class DetalhePonto extends StatelessWidget {
                     color: const Color(0xFFb3cde0),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Horário de chegada:",
+                        "Horários de chegada:",
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: Colors.black87,
                             ),
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        horarioSnapshot.data ??
-                            "Indisponível", // Exibe o horário
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                      ),
+                      const SizedBox(height: 8),
+                      if (horarioSnapshot.data != null)
+                        ...horarioSnapshot.data!
+                            .split(
+                                ',') // Assumindo que os horários estão separados por vírgulas
+                            .map((hora) => Text(
+                                  hora.trim(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: Colors.black87,
+                                      ),
+                                ))
+                            .toList()
+                      else
+                        Text(
+                          "Indisponível",
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.black87,
+                                  ),
+                        ),
                     ],
                   ),
                 ),
