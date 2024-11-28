@@ -6,7 +6,8 @@
 
 
 
-![Logo]()
+<img src="inicio.png" width="500" />
+
 
 
 ## Autores
