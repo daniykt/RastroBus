@@ -5,9 +5,9 @@
 
 
 
-
+<p align="center">
 <img src="inicio.png" width="500" />
-
+<p/>
 
 ## 🛠️ Tecnologias Utilizadas  
 
