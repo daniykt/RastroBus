@@ -17,7 +17,7 @@
 
 ## 🌍 API do Projeto  
 
-Este projeto utiliza a API do **OpenStreetMap** para exibir mapas e obter informações geográficas em tempo real. A API permite buscar localizações, calcular rotas e visualizar detalhes sobre ruas e bairros, tornando a navegação mais precisa e eficiente.  
+Utilizamos a API gratuita OpenStreetMap para fornecer dados de localização de pontos de ônibus em tempo real. Ela permite localizar facilmente as paradas mais próximas, garantindo uma navegação eficiente e precisa.  
 
 <p align="center">
     <img src="oms2.png" width="250" />
