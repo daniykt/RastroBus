@@ -9,6 +9,23 @@
 <img src="inicio.png" width="500" />
 
 
+## 🛠️ Tecnologias Utilizadas  
+
+<p align="center">
+    <img src="https://skillicons.dev/icons?i=vscode,flutter,dart,docker,mysql,nodejs,openstreetmap" />
+</p>
+
+## 🌍 API do Projeto  
+
+Este projeto utiliza a API do **OpenStreetMap** para exibir mapas e obter informações geográficas em tempo real. A API permite buscar localizações, calcular rotas e visualizar detalhes sobre ruas e bairros, tornando a navegação mais precisa e eficiente.  
+
+<p align="center">
+    
+</p>
+
+
+
+
 
 ## Autores
 
