@@ -20,7 +20,7 @@
 Este projeto utiliza a API do **OpenStreetMap** para exibir mapas e obter informações geográficas em tempo real. A API permite buscar localizações, calcular rotas e visualizar detalhes sobre ruas e bairros, tornando a navegação mais precisa e eficiente.  
 
 <p align="center">
-    <img src="OMS_logo.png" width="500" />
+    <img src="oms2.png" width="250" />
 </p>
 
 
